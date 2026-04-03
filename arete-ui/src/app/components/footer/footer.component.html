@@ -1,0 +1,42 @@
+<!-- ============================================================
+     FOOTER - Pie de página con redes sociales y legal
+     ============================================================ -->
+<footer class="app-footer">
+    <div class="footer-container">
+
+        <!-- MARCA -->
+        <div class="footer-brand" *ngIf="cms.footerData() as data">
+            <span class="brand-primary">{{ data.brandPrimary || 'Arete' }}</span>
+            <span class="brand-secondary">{{ data.brandSecondary || 'Dance Studio' }}</span>
+            <p>{{ data.description || 'Tu academia de baile — pasión, ritmo y conexión.' }}</p>
+        </div>
+
+        <!-- SÍGUENOS -->
+        <div class="footer-social">
+            <p class="footer-nav-title">Síguenos</p>
+            <div class="social-links">
+                <a [href]="cms.footerData()?.instagramUrl || 'https://www.instagram.com/arete.dancestudio/'" target="_blank" rel="noopener"
+                    aria-label="Instagram">
+                    <i class="fa fa-instagram"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- LEGAL -->
+        <nav class="footer-legal-nav">
+            <p class="footer-nav-title">Legal</p>
+            <ul>
+                <li><a href="/politica-de-cookies">Política de cookies</a></li>
+                <li><a href="/aviso-legal">Aviso legal</a></li>
+                <li><a href="/privacidad">Privacidad</a></li>
+            </ul>
+        </nav>
+
+    </div>
+
+    <!-- LÍNEA INFERIOR -->
+    <div class="footer-bottom">
+        <p>&copy; {{ currentYear }} Arete Dance Studio — Todos los derechos reservados.</p>
+    </div>
+
+</footer>

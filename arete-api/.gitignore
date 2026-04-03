@@ -1,0 +1,14 @@
+# Entorno virtual Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Base de datos local SQLite
+*.db
+
+# Variables de entorno (¡NUNCA subir a git!)
+.env
+
+# Archivos del sistema
+.DS_Store

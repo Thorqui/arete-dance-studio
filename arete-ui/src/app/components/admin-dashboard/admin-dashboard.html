@@ -1,0 +1,403 @@
+<div class="container-fluid pt-5 pb-5 text-white" style="background: linear-gradient(rgba(13,13,26,0.85), rgba(13,13,26,0.85)), url('assets/bg/admin_bg.jpg') center/cover fixed; min-height: 100vh;">
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2" style="border-color: var(--md-secondary) !important">
+        <h2 class="mb-0" style="color: var(--md-secondary)"><i class="fa fa-cogs"></i> Panel de Control: Administrador</h2>
+        <a routerLink="/admin-chat" class="btn fw-bold shadow-sm" style="background-color: var(--md-secondary); color: var(--md-secondary-dark)">
+            <i class="fa fa-comments"></i> Abrir Centro de Mensajes
+        </a>
+    </div>
+
+    <p>Desde aquí tienes privilegios completos de creación y edición para la página PWA Arete Final.</p>
+
+    <!-- TABS DE NAVEGACIÓN -->
+    <ul class="nav nav-tabs mb-4 text-uppercase fw-bold" style="border-color: var(--md-secondary) !important">
+        <li class="nav-item m-1 ms-0">
+            <a class="nav-link rounded-top" [ngClass]="activeTab === 'cms' ? '' : ''" [style]="activeTab === 'cms' ? 'background-color: var(--md-secondary); color: var(--md-secondary-dark); border-color: var(--md-secondary); cursor:pointer; border-bottom: none;' : 'background-color: var(--md-surface-2); color: var(--md-secondary); border-color: var(--md-secondary); cursor:pointer;'" (click)="activeTab = 'cms'">
+                <i class="fa fa-paint-brush"></i> Personalizar Web CMS
+            </a>
+        </li>
+        <li class="nav-item m-1">
+            <a class="nav-link rounded-top" [style]="activeTab === 'academia' ? 'background-color: var(--md-secondary); color: var(--md-secondary-dark); border-color: var(--md-secondary); cursor:pointer; border-bottom: none;' : 'background-color: var(--md-surface-2); color: var(--md-secondary); border-color: var(--md-secondary); cursor:pointer;'" (click)="activeTab = 'academia'">
+                <i class="fa fa-users"></i> Gestión Academia
+            </a>
+        </li>
+    </ul>
+
+    <!-- =========================
+         TAB 0: LANDING MENU
+         ========================= -->
+    <div *ngIf="activeTab === 'landing'" class="row mt-4 mb-5">
+        <div class="col-md-6 mb-4">
+            <div class="card text-center bg-dark text-white h-100 shadow-lg form-control" style="cursor:pointer; border-radius:15px; border-color: var(--md-secondary)" (click)="activeTab = 'cms'">
+                <div class="card-body p-5">
+                    <i class="fa fa-paint-brush fa-4x mb-3" style="color: var(--md-secondary)"></i>
+                    <h3 style="color: var(--md-secondary)">Personalizar Web / CMS</h3>
+                    <p class="text-muted">Modifica los apartados principales, los textos y estilos de baile de tu portaestudio web publico.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card text-center bg-dark text-white h-100 shadow-lg form-control" style="cursor:pointer; border-radius:15px; border-color: var(--md-primary)" (click)="activeTab = 'academia'">
+                <div class="card-body p-5">
+                    <i class="fa fa-users fa-4x mb-3" style="color: var(--md-primary)"></i>
+                    <h3 style="color: var(--md-primary)">Gestión de Academia</h3>
+                    <p class="text-muted">Controla a tus usuarios, lanza clases puntuales, matricula en grupos fijos y administra estudiantes.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 text-center mt-3">
+             <button class="btn btn-outline-secondary" (click)="activeTab = 'landing'">Volver al Entorno Principal</button>
+        </div>
+    </div>
+
+    <!-- =========================
+         TAB 2: GESTIÓN DE ACADEMIA
+         ========================= -->
+    <div *ngIf="activeTab === 'academia'">
+
+    <div class="row mt-5">
+        <!-- Card 1: CLASES -->
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark text-white border-warning h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-warning border-bottom border-warning pb-2">Programar Clase (Cita)</h5>
+                    <form (submit)="createClass()">
+                        <div class="mb-2">
+                            <label class="form-label" style="font-size: 0.85rem">Nombre/Estilo</label>
+                            <input type="text" class="form-control form-control-sm bg-dark text-white border-secondary" [(ngModel)]="newClassForm.name" name="clsName" required>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label" style="font-size: 0.85rem">Fecha y Hora</label>
+                            <input type="datetime-local" class="form-control form-control-sm bg-dark text-white border-secondary" [(ngModel)]="newClassForm.start_time" name="clsTime" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" style="font-size: 0.85rem">Plazas Totales</label>
+                            <input type="number" class="form-control form-control-sm bg-dark text-white border-secondary" [(ngModel)]="newClassForm.total_spots" name="clsSpots" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" style="font-size: 0.85rem">Rol Solicitado</label>
+                            <select class="form-select form-select-sm bg-dark text-white border-secondary" [(ngModel)]="newClassForm.target_role" name="clsRole">
+                                <option value="general">Cualquier Rol (General)</option>
+                                <option value="chicos">Leads (Chicos)</option>
+                                <option value="chicas">Follows (Chicas)</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-warning btn-sm w-100">Crear Clase / Llamamiento</button>
+                    </form>
+                    <div class="mt-3 overflow-auto" style="max-height: 120px; font-size: 0.8rem">
+                        <div *ngFor="let cls of classes" class="border-bottom border-secondary pb-1 mb-1 d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{cls.name}}</strong> <span class="badge bg-secondary ms-1">{{cls.target_role}}</span><br>
+                                <span class="text-muted">{{cls.start_time | date:'short'}}</span> | <span [class.text-danger]="cls.available_spots === 0">{{cls.available_spots}}/{{cls.total_spots}} plazas</span>
+                            </div>
+                            <button class="btn btn-sm btn-outline-danger py-0 border-0" (click)="deleteClass(cls.id)"><i class="fa fa-times"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: USUARIOS -->
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark text-white h-100" style="border-color: var(--md-secondary)">
+                <div class="card-body">
+                    <h5 class="card-title border-bottom pb-2" style="color: var(--md-secondary); border-color: var(--md-secondary) !important">Registrar Usuario</h5>
+                    <form (submit)="createUser()">
+                        <div class="mb-2">
+                            <input type="text" class="form-control form-control-sm bg-dark text-white border-secondary" [(ngModel)]="newUserForm.name" name="usrName" placeholder="Nombre completo" required>
+                        </div>
+                        <div class="mb-2">
+                            <input type="email" class="form-control form-control-sm bg-dark text-white border-secondary" [(ngModel)]="newUserForm.email" name="usrMail" placeholder="email@ejemplo.com" required>
+                        </div>
+                        <div class="mb-2">
+                            <input type="password" class="form-control form-control-sm bg-dark text-white border-secondary" [(ngModel)]="newUserForm.password" name="usrPwd" placeholder="Contraseña" required>
+                        </div>
+                        <div class="mb-3">
+                            <select class="form-select form-select-sm bg-dark text-white border-secondary" [(ngModel)]="newUserForm.role" name="usrRole">
+                                <option value="student">Alumno</option>
+                                <option value="admin">Administrador</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-sm w-100" style="background-color: var(--md-secondary); color: var(--md-secondary-dark); font-weight: 600;">Invitar/Crear</button>
+                    </form>
+                    <div class="mt-3 overflow-auto" style="max-height: 100px; font-size: 0.8rem">
+                        <div *ngFor="let u of users" class="border-bottom border-secondary pb-1 mb-1 d-flex justify-content-between">
+                            <span>{{u.name}} <small class="text-muted">({{u.role}})</small></span>
+                            <span class="text-muted">{{u.email}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3: PWA -->
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark text-white h-100" style="border-color: var(--md-primary)">
+                <div class="card-body">
+                    <h5 class="card-title border-bottom pb-2" style="color: var(--md-primary); border-color: var(--md-primary) !important">Configuración PWA (Globales)</h5>
+                    <form (submit)="savePwa()">
+                        <div class="mb-2">
+                            <label class="form-label" style="font-size: 0.85rem">Nombre App</label>
+                            <input type="text" class="form-control form-control-sm bg-dark text-white border-secondary" [(ngModel)]="pwaForm.name" name="pwaName">
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label" style="font-size: 0.85rem">Nombre Corto</label>
+                            <input type="text" class="form-control form-control-sm bg-dark text-white border-secondary" [(ngModel)]="pwaForm.shortName" name="pwaSName">
+                        </div>
+                        <div class="mb-2 d-flex gap-2 align-items-center">
+                            <label class="form-label mb-0" style="font-size: 0.85rem; width: 100px;">Color Tema</label>
+                            <input type="color" class="form-control form-control-color bg-dark border-secondary p-0" [(ngModel)]="pwaForm.themeColor" name="pwaTheme">
+                            <span class="text-muted ms-2">{{pwaForm.themeColor}}</span>
+                        </div>
+                        <div class="mb-3 d-flex gap-2 align-items-center">
+                            <label class="form-label mb-0" style="font-size: 0.85rem; width: 100px;">Color Fondo</label>
+                            <input type="color" class="form-control form-control-color bg-dark border-secondary p-0" [(ngModel)]="pwaForm.backgroundColor" name="pwaBg">
+                            <span class="text-muted ms-2">{{pwaForm.backgroundColor}}</span>
+                        </div>
+                        <button type="submit" class="btn btn-sm w-100" style="background-color: var(--md-primary); border:none; color: white; font-weight: 600;">Actualizar Manifiesto</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN GRUPOS FIJOS (FASE 5) -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3 class="border-bottom pb-2 mb-4" style="color: var(--md-secondary); border-color: var(--md-secondary) !important">Grupos Regulares y Matrículas</h3>
+        </div>
+    </div>
+    <div class="row">
+        <!-- CREAR GRUPO FIJO -->
+        <div class="col-md-6 mb-4">
+            <div class="card bg-dark text-white h-100" style="border-color: var(--md-secondary)">
+                <div class="card-body">
+                    <h5 class="card-title border-bottom pb-2" style="color: var(--md-secondary); border-color: var(--md-secondary) !important">Añadir Grupo Regular</h5>
+                    <form (submit)="createGroup()">
+                        <div class="mb-2">
+                            <label class="form-label" style="font-size: 0.85rem">Nombre del Grupo</label>
+                            <input type="text" class="form-control form-control-sm bg-dark text-white border-secondary" [(ngModel)]="newGroupForm.name" name="grpName" placeholder="Ej: Bachata 0" required>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label" style="font-size: 0.85rem">Horario</label>
+                            <input type="text" class="form-control form-control-sm bg-dark text-white border-secondary" [(ngModel)]="newGroupForm.schedule_description" name="grpSchedule" placeholder="Ej: Lunes 18:00" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" style="font-size: 0.85rem">Aforo (Límite Alumnos)</label>
+                            <input type="number" class="form-control form-control-sm bg-dark text-white border-secondary" [(ngModel)]="newGroupForm.max_students" name="grpSpots" required>
+                        </div>
+                        <button type="submit" class="btn btn-sm w-100" style="background-color: var(--md-secondary); color: var(--md-secondary-dark); font-weight: 600;">Crear Grupo Fijo</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- MATRICULAR ALUMNO -->
+        <div class="col-md-6 mb-4">
+            <div class="card bg-dark text-white h-100" style="border-color: var(--md-secondary)">
+                <div class="card-body">
+                    <h5 class="card-title border-bottom pb-2" style="color: var(--md-secondary); border-color: var(--md-secondary) !important">Matricular Alumno</h5>
+                    <form (submit)="enrollStudent()">
+                        <div class="mb-2">
+                            <label class="form-label" style="font-size: 0.85rem">Seleccionar Alumno</label>
+                            <select class="form-select form-select-sm bg-dark text-white border-secondary" [(ngModel)]="newEnrollmentForm.user_id" name="enrUser" required>
+                                <option *ngFor="let u of users" [value]="u.id">{{u.name}} ({{u.email}})</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" style="font-size: 0.85rem">Seleccionar Grupo Regular</label>
+                            <select class="form-select form-select-sm bg-dark text-white border-secondary" [(ngModel)]="newEnrollmentForm.group_id" name="enrGroup" required>
+                                <option *ngFor="let g of groups" [value]="g.id">{{g.name}} ({{g.schedule_description}})</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-sm w-100" style="background-color: var(--md-secondary); color: var(--md-secondary-dark); font-weight: 600;">Registrar Matrícula</button>
+                    </form>
+                    <div class="mt-3 overflow-auto" style="max-height: 100px; font-size: 0.8rem">
+                        <div *ngFor="let g of groups" class="border-bottom border-secondary pb-1 mb-1 d-flex justify-content-between">
+                            <span><strong>{{g.name}}</strong> <small class="text-muted">({{g.schedule_description}})</small></span>
+                            <span class="text-muted">Max: {{g.max_students}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- END ROW ACADEMIA -->
+    </div> <!-- FIN TAB ACADEMIA -->
+
+    <!-- =========================
+         TAB 1: DISEÑO WEB (CMS)
+         ========================= -->
+    <div *ngIf="activeTab === 'cms'">
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <h3 class="border-bottom pb-2 mb-4" style="color: var(--md-tertiary); border-color: var(--md-tertiary) !important">Gestor de Contenido (CMS)</h3>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- FORMULARIO HERO -->
+        <div class="col-md-6 mb-4">
+            <div class="card bg-dark text-white border-secondary">
+                <div class="card-header bg-secondary">
+                    Editar Sección Principal (Hero)
+                </div>
+                <div class="card-body">
+                    <form (submit)="saveHero()">
+                        <div class="mb-3">
+                            <label class="form-label text-warning">Insignia (Badge)</label>
+                            <input type="text" class="form-control bg-dark text-white border-secondary" [(ngModel)]="heroForm.badge" name="badge" placeholder="Ej: Tu academia de baile">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-warning">Título Principal</label>
+                            <input type="text" class="form-control bg-dark text-white border-secondary" [(ngModel)]="heroForm.title" name="heroTitle" placeholder="Ej: Siente">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-warning">Palabra Acentuada (Color primario)</label>
+                            <input type="text" class="form-control bg-dark text-white border-secondary" [(ngModel)]="heroForm.accent" name="heroAccent" placeholder="Ej: el movimiento.">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-warning">Descripción</label>
+                            <textarea class="form-control bg-dark text-white border-secondary" [(ngModel)]="heroForm.description" name="heroDesc" rows="4"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-warning">URL de Vídeo de Fondo (Assets o Web)</label>
+                            <input type="text" class="form-control bg-dark text-white border-secondary" [(ngModel)]="heroForm.videoUrl" name="heroVideo" placeholder="assets/img/tu_video.mp4">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-warning">Alineación del Contenedor</label>
+                            <select class="form-select bg-dark text-white border-secondary" [(ngModel)]="heroForm.layout.alignment" name="heroLayout">
+                                <option value="left">Izquierda</option>
+                                <option value="center">Centrado</option>
+                                <option value="right">Derecha</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn w-100" style="background-color: var(--md-primary); color: white; font-weight: 600;">Guardar Cambios Hero</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- FORMULARIO ABOUT -->
+        <div class="col-md-6 mb-4">
+            <div class="card bg-dark text-white border-secondary h-100">
+                <div class="card-header bg-secondary">
+                    Editar Sección "Sobre nosotros" (About)
+                </div>
+                <div class="card-body">
+                    <form (submit)="saveAbout()">
+                        <div class="mb-3">
+                            <label class="form-label text-info">Insignia Superior</label>
+                            <input type="text" class="form-control bg-dark text-white border-secondary" [(ngModel)]="aboutForm.overline" name="aboutOverline" placeholder="Ej: Sobre nosotros">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-info">Título Principal</label>
+                            <input type="text" class="form-control bg-dark text-white border-secondary" [(ngModel)]="aboutForm.title" name="aboutTitle" placeholder="Ej: Pasión por">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-info">Palabra Acentuada</label>
+                            <input type="text" class="form-control bg-dark text-white border-secondary" [(ngModel)]="aboutForm.accent" name="aboutAccent" placeholder="Ej: el baile.">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-info">Párrafo Principal</label>
+                            <textarea class="form-control bg-dark text-white border-secondary" [(ngModel)]="aboutForm.bodyPrimary" name="aboutBody1" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-info">URL Imagen Principal</label>
+                            <input type="text" class="form-control bg-dark text-white border-secondary" [(ngModel)]="aboutForm.images[0]" name="img1" placeholder="assets/img/1.jpg">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-info">URLs Imágenes Secundarias (X2)</label>
+                            <div class="d-flex gap-2">
+                                <input type="text" class="form-control bg-dark text-white border-secondary" [(ngModel)]="aboutForm.images[1]" name="img2" placeholder="img2.jpg">
+                                <input type="text" class="form-control bg-dark text-white border-secondary" [(ngModel)]="aboutForm.images[2]" name="img3" placeholder="img3.jpg">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-info">Distribución / Layout de Imágenes</label>
+                            <select class="form-select bg-dark text-white border-secondary" [(ngModel)]="aboutForm.layout.imageAlignment" name="aboutLayout">
+                                <option value="left">Imágenes en Mosaico Izquierda</option>
+                                <option value="right">Imágenes en Mosaico Derecha</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn w-100" style="background-color: var(--md-tertiary); color: var(--md-secondary-dark); font-weight: 600;">Guardar Cambios About</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- SEGUNDA FILA: STYLES Y FOOTER -->
+    <div class="row">
+        <!-- FORMULARIO STYLES -->
+        <div class="col-md-6 mb-4">
+            <div class="card bg-dark text-white border-secondary h-100">
+                <div class="card-header bg-secondary">Editar Estilos de Baile (Fase 7: Array UI)</div>
+                <div class="card-body">
+                    <form (submit)="saveStyles()">
+                        <div class="mb-3">
+                            <label class="form-label text-success">Título Primario</label>
+                            <input type="text" class="form-control bg-dark text-white border-secondary" [(ngModel)]="stylesForm.title" name="stTitle">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label text-success">Estilos ({{stylesForm.items?.length || 0}})</label>
+                            
+                            <div class="d-flex flex-column gap-3 mb-3 border border-secondary p-2 rounded bg-dark" *ngFor="let item of stylesForm.items; let i = index">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h6 class="text-white m-0">Estilo #{{i+1}}</h6>
+                                    <button type="button" class="btn btn-sm btn-outline-danger py-0" (click)="removeStyle(i)"><i class="fa fa-trash"></i></button>
+                                </div>
+                                <input type="text" class="form-control form-control-sm bg-dark text-white border-secondary" [(ngModel)]="item.id" name="stId{{i}}" placeholder="ID (ej: st-salsa)">
+                                <input type="text" class="form-control form-control-sm bg-dark text-white border-secondary" [(ngModel)]="item.name" name="stName{{i}}" placeholder="Nombre (ej: Bachata Sensual)">
+                                <input type="text" class="form-control form-control-sm bg-dark text-white border-secondary" [(ngModel)]="item.description" name="stDesc{{i}}" placeholder="Descripción breve">
+                                <input type="text" class="form-control form-control-sm bg-dark text-white border-secondary" [(ngModel)]="item.videoUrl" name="stVid{{i}}" placeholder="Local Assets webm src">
+                            </div>
+
+                            <button type="button" class="btn btn-outline-success btn-sm w-100" (click)="addStyle()"><i class="fa fa-plus"></i> Añadir Nuevo Estilo</button>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Actualizar Estilos</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- FORMULARIO FOOTER Y SCHEDULE -->
+        <div class="col-md-6 mb-4">
+            <div class="card bg-dark text-white border-secondary h-100">
+                <div class="card-header bg-secondary">Editar Horario Fijo y Pie de Página</div>
+                <div class="card-body">
+                    <form (submit)="saveSchedule()" class="mb-4">
+                        <label class="form-label mb-2" style="color: #bc8f8f">Tabla Horarios Fijos (Fase 7)</label>
+                        <div class="d-flex flex-column gap-2 mb-3 mt-1" style="max-height: 300px; overflow-y: auto;">
+                            <div class="border border-secondary p-2 rounded bg-dark" *ngFor="let slot of scheduleForm.slots; let i = index">
+                                <div class="d-flex gap-2">
+                                    <input type="text" class="form-control form-control-sm bg-dark text-white border-secondary w-25" [(ngModel)]="slot.time" name="schTime{{i}}" placeholder="Hora">
+                                    <input type="text" class="form-control form-control-sm bg-dark text-white border-secondary w-75" [(ngModel)]="slot.title" name="schTitle{{i}}" placeholder="Estilo">
+                                    <button type="button" class="btn btn-outline-danger btn-sm py-0 border-0" (click)="removeScheduleSlot(i)"><i class="fa fa-times"></i></button>
+                                </div>
+                                <div class="d-flex gap-2 mt-1">
+                                    <input type="text" class="form-control form-control-sm bg-dark text-white border-secondary w-50" [(ngModel)]="slot.subtitle" name="schSub{{i}}" placeholder="Nivel">
+                                    <input type="text" class="form-control form-control-sm bg-dark text-white border-secondary w-50" [(ngModel)]="slot.teacher" name="schTea{{i}}" placeholder="Profesor">
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-secondary w-100" style="color: #bc8f8f; border-color: #bc8f8f;" (click)="addScheduleSlot()"><i class="fa fa-plus"></i> Añadir Bloque de Horario</button>
+                        </div>
+                        <button type="submit" class="btn btn-sm w-100" style="background-color: #bc8f8f; border:none; color:white;">Actualizar Horarios Estáticos</button>
+                    </form>
+                    
+                    <form (submit)="saveFooter()">
+                        <div class="mb-3">
+                            <label class="form-label" style="color: #ff9fb8">Descripción (Footer)</label>
+                            <textarea class="form-control bg-dark text-white border-secondary" [(ngModel)]="footerForm.description" name="foDesc" rows="2"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" style="color: #ff9fb8">Instagram URL</label>
+                            <input type="text" class="form-control bg-dark text-white border-secondary" [(ngModel)]="footerForm.instagramUrl" name="foInsta">
+                        </div>
+                        <button type="submit" class="btn w-100 text-dark font-weight-bold" style="background-color: #ff9fb8; border:none">Actualizar Footer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div> <!-- FIN TAB CMS -->
+
+</div>

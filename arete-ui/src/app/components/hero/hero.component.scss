@@ -1,0 +1,244 @@
+/* ============================================================
+   HERO COMPONENT STYLES
+   Sección de bienvenida a pantalla completa con video de fondo.
+   ============================================================ */
+
+.hero-section {
+    /* Ocupa toda la pantalla */
+    position: relative;
+    width: 100%;
+    height: 100svh;
+    /* svh = small viewport height - mejor en móvil */
+    min-height: 600px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* ============================================================
+   VIDEO DE FONDO
+   Cubre el 100% del contenedor manteniendo proporciones
+   ============================================================ */
+.hero-video-wrapper {
+    position: absolute;
+    inset: 0;
+    /* shorthand para top/left/right/bottom: 0 */
+    z-index: 0;
+
+    .hero-video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        /* El video cubre sin deformarse */
+        object-position: center;
+        display: block;
+    }
+
+    /* Degradado oscuro multicapa sobre el video */
+    .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(to right,
+                rgba(13, 13, 26, 0.92) 0%,
+                rgba(13, 13, 26, 0.65) 60%,
+                rgba(13, 13, 26, 0.3) 100%),
+            linear-gradient(to top,
+                rgba(13, 13, 26, 0.8) 0%,
+                transparent 40%);
+    }
+
+    /* Fallback cuando el navegador no puede reproducir el vídeo */
+    &.video-failed {
+        background: radial-gradient(ellipse at 30% 50%,
+                rgba(108, 99, 255, 0.25) 0%,
+                rgba(233, 30, 140, 0.10) 50%,
+                transparent 80%),
+            var(--md-background);
+
+        .hero-video {
+            display: none;
+        }
+    }
+}
+
+/* ============================================================
+   CONTENIDO SUPERPUESTO
+   ============================================================ */
+.hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 1280px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+
+    /* Cada hijo se anima escalonadamente */
+    .fade-in-up:nth-child(1) {
+        animation-delay: 0.1s;
+    }
+
+    .fade-in-up:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .fade-in-up:nth-child(3) {
+        animation-delay: 0.35s;
+    }
+
+    .fade-in-up:nth-child(4) {
+        animation-delay: 0.5s;
+    }
+
+    .fade-in-up:nth-child(5) {
+        animation-delay: 0.65s;
+    }
+}
+
+/* Etiqueta pequeña de bienvenida */
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(108, 99, 255, 0.15);
+    border: 1px solid rgba(108, 99, 255, 0.35);
+    border-radius: 100px;
+    padding: 6px 18px;
+    width: fit-content;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--md-primary);
+    letter-spacing: 0.5px;
+    backdrop-filter: blur(8px);
+}
+
+/* Título principal con degradado de color */
+.hero-title {
+    font-size: clamp(3rem, 9vw, 7rem);
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -2px;
+    color: var(--md-on-background);
+
+    .title-accent {
+        /* Degradado del texto */
+        background: linear-gradient(135deg, var(--md-primary), var(--md-secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-family: comicate, cursive;
+    }
+}
+
+/* Texto descriptivo */
+.hero-body {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: rgba(232, 232, 255, 0.75);
+    max-width: 520px;
+    line-height: 1.7;
+    font-weight: 400;
+}
+
+/* Botones de acción */
+.hero-actions {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+/* Estadísticas rápidas */
+.hero-stats {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-top: 8px;
+
+    .stat {
+        display: flex;
+        flex-direction: column;
+
+        strong {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--md-on-background);
+            line-height: 1;
+        }
+
+        span {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--md-on-surface);
+            margin-top: 4px;
+        }
+    }
+
+    .stat-divider {
+        width: 1px;
+        height: 40px;
+        background: var(--md-outline);
+    }
+}
+
+/* Indicador de scroll animado */
+.scroll-indicator {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    width: 28px;
+    height: 44px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 14px;
+    display: flex;
+    justify-content: center;
+    padding-top: 6px;
+
+    .scroll-dot {
+        width: 4px;
+        height: 8px;
+        background: var(--md-primary);
+        border-radius: 2px;
+        animation: scrollDown 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+}
+
+@keyframes scrollDown {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    70% {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+    .hero-content {
+        padding: 0 24px;
+        gap: 20px;
+    }
+
+    .hero-stats {
+        gap: 16px;
+
+        .stat strong {
+            font-size: 1.4rem;
+        }
+    }
+}

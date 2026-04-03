@@ -1,0 +1,56 @@
+<!-- ============================================================
+     SCHEDULE - Horarios de clases
+     Tabla con el horario semanal de la academia.
+     Para añadir o cambiar horas/clases, edita los <td> de la tabla.
+     ============================================================ -->
+<section id="schedule" class="schedule-section">
+    <div class="schedule-container">
+
+        <!-- CABECERA -->
+        <div class="schedule-header" *ngIf="cms.scheduleData() as data">
+            <div class="section-line"></div>
+            <p class="section-overline">{{ data.overline || 'Planifica tu semana' }}</p>
+            <h2 class="section-title">
+                {{ data.title || 'Nuestros' }} <span class="accent">{{ data.accent || 'horarios.' }}</span>
+            </h2>
+        </div>
+
+        <!-- TABLA DE HORARIOS -->
+        <!-- Añade clases CSS (class-bachata, class-salsa...) para controlar el color de cada celda -->
+        <div class="table-wrapper">
+            <table class="schedule-table">
+                <thead>
+                    <tr>
+                        <th class="time-col"></th>
+                        <th *ngFor="let day of cms.scheduleData()?.days">{{ day }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let slot of cms.scheduleData()?.slots">
+                        <td class="time-col">{{ slot.time }}</td>
+                        <td *ngFor="let cls of slot.classes" [ngClass]="cls ? 'class-' + cls : 'empty'">
+                            <span *ngIf="cls">{{ cls | titlecase }}</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- LEYENDA DE COLORES -->
+        <div class="schedule-legend">
+            <div class="legend-item">
+                <span class="dot bachata"></span>Bachata
+            </div>
+            <div class="legend-item">
+                <span class="dot salsa"></span>Salsa
+            </div>
+            <div class="legend-item">
+                <span class="dot comercial"></span>Comercial
+            </div>
+            <div class="legend-item">
+                <span class="dot ladys"></span>Ladys
+            </div>
+        </div>
+
+    </div>
+</section>

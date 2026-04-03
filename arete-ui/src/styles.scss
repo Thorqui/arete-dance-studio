@@ -1,0 +1,324 @@
+/* ===================================================
+   ARETE DANCE STUDIO - Global Stylesheet
+   Material Design 3 + Bootstrap 5
+   Moderno, Fluido, Responsive
+   =================================================== */
+
+/* Importación de bootstrap */
+@use "bootstrap/scss/bootstrap";
+
+/* ===================================================
+   FUENTES PERSONALIZADAS (fonts locales de la academia)
+   =================================================== */
+@font-face {
+  font-family: 'Roc Grotesk';
+  src: url('assets/fonts/roc-grotesk-wide-light.otf') format('opentype');
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: 'Gyst Variable';
+  src: url('assets/fonts/gyst-bold.otf') format('opentype');
+  font-weight: bold;
+}
+
+/* ===================================================
+   PALETA DE COLORES - Material Design 3
+   Modifica aquí las variables para cambiar los colores
+   de toda la web de forma centralizada.
+   =================================================== */
+:root {
+  /* Colores primarios */
+  /* Colores primarios (Cálidos/Místicos Arete) */
+  --md-primary: #DE4190;
+  /* Fucsia vibrante */
+  --md-primary-dark: #70358B;
+  /* Púrpura oscuro */
+  --md-secondary: #C1DDB4;
+  /* Verde Menta */
+  --md-secondary-dark: #114234;
+  /* Verde Bosque */
+  --md-tertiary: #96D0DF;
+  /* Azul Cielo */
+
+  /* Fondos ESPACIALES (Mantenidos a petición) */
+  --md-background: #0D0D1A;
+  /* Fondo oscuro principal */
+  --md-surface: #16162A;
+  /* Superficies de tarjetas */
+  --md-surface-2: #1E1E35;
+  /* Superficies elevadas */
+  --md-surface-3: #252540;
+  /* Superficies aún más elevadas */
+
+  /* Texto */
+  --md-on-background: #E8E8FF;
+  /* Texto sobre fondo oscuro */
+  --md-on-surface: #C8C8E8;
+  /* Texto secundario */
+  --md-on-primary: #FFFFFF;
+  /* Texto sobre violeta */
+  --md-on-secondary: #FFFFFF;
+  /* Texto sobre rosa */
+
+  /* Estados */
+  --md-outline: rgba(108, 99, 255, 0.25);
+  /* Bordes sutiles */
+  --md-overlay: rgba(13, 13, 26, 0.7);
+  /* Overlay semitransparente */
+
+  /* Elevación / Sombras */
+  --md-shadow-1: 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.6);
+  --md-shadow-2: 0 4px 6px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.5);
+  --md-shadow-3: 0 10px 20px rgba(0, 0, 0, 0.4), 0 6px 6px rgba(0, 0, 0, 0.5);
+
+  /* Tipografía */
+  --md-font-display: grasping, 'Trebuchet MS', sans-serif;
+  --md-font-body: 'Inter', 'Segoe UI', Arial, sans-serif;
+
+  /* Bordes redondeados (Material Design 3) */
+  --md-radius-sm: 8px;
+  --md-radius-md: 16px;
+  --md-radius-lg: 24px;
+  --md-radius-xl: 40px;
+
+  /* Transiciones */
+  --md-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===================================================
+   RESET Y BASE GLOBAL
+   =================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Scroll suave entre secciones */
+}
+
+body {
+  font-family: var(--md-font-body);
+  background-color: var(--md-background);
+  color: var(--md-on-background);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===================================================
+   VISIBILIDAD PWA - OVERRIDES BOOTSTRAP
+   (Corrije los textos grises que no se ven en el fondo espacial)
+   =================================================== */
+.text-muted, 
+.text-secondary,
+.text-secondary:not(.active-nav) {
+  color: #DDBEDC !important; /* Transforma grises a tu Lila Empolvado */
+  opacity: 0.95;
+}
+
+.form-label {
+  color: #E8E8FF !important; /* Títulos de input en blanco azulado potente */
+  font-weight: 500;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+}
+
+.text-info, .card-title.text-info {
+  color: #96D0DF !important; /* Azul Cielo/Aguamarina — Terciario */
+}
+
+.text-success, .card-title.text-success {
+  color: #C1DDB4 !important; /* Verde Menta Pastel — Secundario */
+}
+
+.text-warning, .card-title.text-warning {
+  color: #ffffff !important; /* Blanco limpio para advertencias — sin rosa */
+}
+
+.text-danger, .card-title.text-danger {
+  color: #DE4190 !important; /* Fucsia principal (solo para acciones destructivas) */
+}
+
+.border-secondary {
+  border-color: rgba(221, 190, 220, 0.25) !important;
+}
+
+/* ===================================================
+   IMPORTAMOS INTER de Google Fonts en runtime
+   =================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* ===================================================
+   ANIMACIONES GLOBALES REUTILIZABLES
+   =================================================== */
+
+/* Aparición suave hacia arriba */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Efecto de pulso suave para destacar */
+@keyframes pulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+/* Línea animada que crece */
+@keyframes growLine {
+  from {
+    width: 0;
+  }
+
+  to {
+    width: 60px;
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.7s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* ===================================================
+   COMPONENTE COMPARTIDO - SECTION TITLE
+   Clase reutilizable para los títulos de sección
+   =================================================== */
+.section-title {
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  font-weight: 700;
+  color: var(--md-on-background);
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+
+  span.accent {
+    color: var(--md-secondary);
+    font-family: comicate, cursive;
+  }
+}
+
+.section-subtitle {
+  font-size: 1.1rem;
+  color: var(--md-on-surface);
+  font-weight: 400;
+  line-height: 1.6;
+  max-width: 600px;
+}
+
+/* Línea decorativa de acento */
+.section-line {
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--md-primary), var(--md-secondary));
+  border-radius: 2px;
+  margin: 12px 0;
+}
+
+/* ===================================================
+   COMPONENTE COMPARTIDO - BOTONES MD3
+   =================================================== */
+.btn-md-primary {
+  background: linear-gradient(135deg, var(--md-primary), var(--md-secondary));
+  color: var(--md-on-primary);
+  border: none;
+  border-radius: var(--md-radius-xl);
+  padding: 14px 32px;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: var(--md-transition);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0);
+    transition: var(--md-transition);
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(108, 99, 255, 0.4);
+    color: var(--md-on-primary);
+
+    &::after {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.btn-md-outline {
+  background: transparent;
+  color: var(--md-on-background);
+  border: 2px solid var(--md-outline);
+  border-radius: var(--md-radius-xl);
+  padding: 12px 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--md-transition);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  backdrop-filter: blur(8px);
+
+  &:hover {
+    border-color: var(--md-primary);
+    color: var(--md-primary);
+    box-shadow: 0 4px 20px rgba(108, 99, 255, 0.2);
+  }
+}
+
+/* ===================================================
+   SCROLLBAR personalizada
+   =================================================== */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--md-background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--md-primary);
+  border-radius: 3px;
+}
+
+/* ===================================================
+   HERO APP WRAPPER
+   =================================================== */
+.main-content {
+  /* Reserva espacio para el navbar fijo */
+  padding-top: 72px;
+}

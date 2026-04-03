@@ -1,0 +1,54 @@
+<div class="container mt-4 text-white">
+    <!-- MIS CLASES REGULARES -->
+    <div class="row" *ngIf="fixedGroups.length > 0">
+        <div class="col-12 mb-4">
+            <h3 class="text-success border-bottom border-success pb-2">Mis Clases Regulares</h3>
+            <div class="row mt-3">
+                <div class="col-md-4 mb-3" *ngFor="let g of fixedGroups">
+                    <div class="card bg-dark border-success h-100 text-white shadow">
+                        <div class="card-body">
+                            <h5 class="card-title text-success mb-2"><i class="fa fa-star text-warning"></i> {{g.name}}</h5>
+                            <p class="card-text text-muted mb-0"><small><i class="fa fa-calendar"></i> {{g.schedule_description}}</small></p>
+                            <span class="badge bg-success mt-2"><i class="fa fa-check"></i> Matriculado</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN ROW: Refuerzos y Chat -->
+    <div class="row">
+        <!-- REFUERZOS GLOBALES -->
+        <div class="col-md-8 mb-3">
+            <h3 class="text-warning border-bottom border-warning pb-2">Tablón de Refuerzos Extras</h3>
+            <p class="text-muted"><small>Asegura tu plaza en la academia garantizando tu asistencia. Aquí irán apareciendo los llamamientos de último minuto para equilibrar roles.</small></p>
+            
+            <div *ngIf="classes.length === 0" class="alert alert-secondary text-center text-muted">
+                No hay clases disponibles o con plazas libres en este momento.
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-4" *ngFor="let cls of classes">
+                    <div class="card text-white border-secondary h-100 shadow-sm" style="background-color: var(--md-surface);">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                <div>
+                                    <h5 class="card-title text-warning mb-1">
+                                        {{ cls.name }}
+                                        <span *ngIf="cls.target_role === 'chicos'" class="badge bg-primary text-white ms-2" style="font-size: 0.6rem;"><i class="fa fa-male"></i> Chicos (Leads)</span>
+                                        <span *ngIf="cls.target_role === 'chicas'" class="badge text-white ms-2" style="background-color: #ff3366; font-size: 0.6rem;"><i class="fa fa-female"></i> Chicas (Follows)</span>
+                                    </h5>
+                                    <p class="card-text mb-2 text-muted"><i class="fa fa-clock-o"></i> {{ cls.start_time | date:'short' }}</p>
+                                    <span class="badge" [ngClass]="cls.available_spots <= 3 ? 'bg-danger text-white' : 'bg-info text-dark'">
+                                        🔥 Quedan {{ cls.available_spots }} plazas
+                                    </span>
+                                </div>
+                                <button class="btn btn-warning btn-sm fw-bold px-4 py-2 mt-2" (click)="bookSpot(cls.id)" [disabled]="cls.available_spots <= 0">Reservar Plaza</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>

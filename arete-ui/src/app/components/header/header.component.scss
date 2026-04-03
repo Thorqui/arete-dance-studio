@@ -1,0 +1,226 @@
+/* ============================================================
+   HEADER COMPONENT STYLES
+   Navbar fija con efecto glassmorphism al hacer scroll.
+   Modifica --header-height para ajustar la altura del navbar.
+   ============================================================ */
+
+$header-height: 72px;
+
+.app-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    height: $header-height;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Estado por defecto - completamente transparente */
+    background: transparent;
+
+    /* Estado al hacer scroll - glassmorphism */
+    &.scrolled {
+        background: rgba(13, 13, 26, 0.85);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(108, 99, 255, 0.2);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+    }
+}
+
+/* ============================================================
+   CONTENEDOR INTERNO DEL NAV
+   ============================================================ */
+.nav-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    height: 100%;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* ============================================================
+   MARCA / LOGO
+   ============================================================ */
+.brand {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    line-height: 1;
+
+    .brand-isotipo {
+        height: 40px;
+        width: auto;
+        object-fit: contain;
+        filter: brightness(1);
+        transition: opacity 0.3s ease;
+    }
+
+    .brand-text {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .brand-primary {
+        font-family: var(--md-font-display, grasping);
+        font-size: 1.8rem;
+        color: var(--md-primary);
+        letter-spacing: 2px;
+    }
+
+    .brand-secondary {
+        font-size: 0.65rem;
+        font-weight: 600;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: var(--md-on-surface);
+        margin-top: -2px;
+    }
+}
+
+/* ============================================================
+   LISTA DE ENLACES DE NAVEGACIÓN
+   ============================================================ */
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li a {
+        text-decoration: none;
+        color: var(--md-on-surface);
+        font-size: 0.95rem;
+        font-weight: 500;
+        padding: 8px 16px;
+        border-radius: var(--md-radius-xl);
+        transition: all 0.25s ease;
+        display: block;
+        position: relative;
+
+        /* Hover: color violeta + fondo suave */
+        &:hover {
+            color: var(--md-primary);
+            background: rgba(108, 99, 255, 0.1);
+        }
+
+        /* Sección activa según scroll: texto blanco + línea degradada */
+        &.active {
+            color: var(--md-on-background);
+            font-weight: 600;
+
+            &::after {
+                content: '';
+                position: absolute;
+                bottom: 2px;
+                left: 16px;
+                right: 16px;
+                height: 2px;
+                background: linear-gradient(90deg, var(--md-primary), var(--md-secondary));
+                border-radius: 2px;
+            }
+        }
+    }
+
+    /* Botón CTA especial - Contacto */
+    .nav-cta {
+        background: linear-gradient(135deg, var(--md-primary), var(--md-secondary));
+        color: #fff !important;
+        border-radius: var(--md-radius-xl);
+        padding: 10px 22px !important;
+        font-weight: 600;
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(233, 30, 140, 0.4);
+            background: linear-gradient(135deg, var(--md-secondary), var(--md-primary)) !important;
+        }
+    }
+}
+
+/* ============================================================
+   BOTÓN HAMBURGUESA - Solo visible en móvil
+   ============================================================ */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: var(--md-radius-sm);
+
+    span {
+        display: block;
+        width: 24px;
+        height: 2px;
+        background: var(--md-on-background);
+        border-radius: 2px;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        transform-origin: center;
+    }
+
+    /* Animación X al abrir el menú */
+    &.open {
+        span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+
+        span:nth-child(2) {
+            opacity: 0;
+            transform: scaleX(0);
+        }
+
+        span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+    }
+}
+
+/* ============================================================
+   ESTILOS RESPONSIVE PARA PANTALLAS PEQUEÑAS
+   ============================================================ */
+@media (max-width: 900px) {
+    .hamburger {
+        display: flex;
+        /* Mostrar botón hamburguesa en móvil */
+    }
+
+    .nav-links {
+        /* Panel lateral deslizante */
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 280px;
+        height: 100vh;
+        background: var(--md-surface);
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 100px 24px 40px;
+        gap: 4px;
+        transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border-left: 1px solid var(--md-outline);
+        box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
+
+        &.open {
+            right: 0;
+        }
+
+        li {
+            width: 100%;
+
+            a {
+                width: 100%;
+                font-size: 1.1rem;
+                padding: 12px 16px;
+            }
+        }
+    }
+}

@@ -1,0 +1,53 @@
+<!-- ============================================================
+     STYLES - Sección de Estilos de Baile
+     Pestaña interactiva para Bachata, Salsa, Comercial y Ladys.
+     Para añadir un nuevo estilo: copia un bloque tab-pane y
+     añade el botón correspondiente en la lista de pestañas.
+     ============================================================ -->
+<section id="styles" class="styles-section">
+
+    <!-- CABECERA DE SECCIÓN -->
+    <div class="styles-header" *ngIf="cms.stylesData() as data">
+        <div class="section-line"></div>
+        <p class="section-overline">{{ data.overline || 'Aprende con nosotros' }}</p>
+        <h2 class="section-title">
+            {{ data.title || 'Elige tu' }} <span class="accent">{{ data.accent || 'estilo.' }}</span>
+        </h2>
+        <p class="section-subtitle">
+            {{ data.subtitle || 'Explora nuestra oferta de clases y encuentra el ritmo que más te apasiona.' }}
+        </p>
+    </div>
+
+    <!-- PESTAÑAS DE NAVEGACIÓN -->
+    <!-- Para cambiar el orden, reordena los elementos en el CMS -->
+    <div class="styles-tabs" *ngIf="cms.stylesData()?.items as items">
+        <button *ngFor="let item of items" [class.active]="activeTab === item.id" class="tab-btn" (click)="setActive(item.id)">
+            {{ item.name }}
+        </button>
+    </div>
+
+    <!-- CONTENIDO DE CADA PESTAÑA -->
+    <div class="styles-content" *ngIf="cms.stylesData()?.items as items" [ngClass]="cms.stylesData()?.layout?.alignment === 'left' ? 'align-left' : ''">
+
+        <!-- ITERAMOS SOBRE LOS ESTILOS -->
+        <div class="tab-pane" *ngFor="let item of items" [class.active]="activeTab === item.id">
+            <div class="tab-inner">
+                <div class="tab-video">
+                    <!-- Video que se reproduce automáticamente al mostrar el tab -->
+                    <video autoplay loop muted [muted]="true" playsinline
+                        [src]="activeTab === item.id ? item.videoUrl : ''">
+                        <source [src]="item.videoUrl" type="video/mp4">
+                    </video>
+                </div>
+                <div class="tab-text">
+                    <span class="style-number">{{ item.number }}</span>
+                    <h3>{{ item.name }}</h3>
+                    <div class="section-line"></div>
+                    <p>{{ item.description }}</p>
+                    <a href="#contact" class="btn-md-primary">Apuntarme a {{ item.name }}</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>

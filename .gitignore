@@ -1,0 +1,23 @@
+# =============================================
+# ARETE DANCE STUDIO - .gitignore raíz
+# =============================================
+
+# Python / Backend
+arete-api/venv/
+arete-api/__pycache__/
+arete-api/*.pyc
+arete-api/.env
+arete-api/cms.db
+
+# Node / Frontend
+arete-ui/node_modules/
+arete-ui/dist/
+arete-ui/.angular/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

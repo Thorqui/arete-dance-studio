@@ -1,0 +1,118 @@
+<!-- ============================================================
+     CONTACT - Formulario de contacto
+     Los campos name, email, phone y message se envían al
+     backend (FastAPI) en /api/contact. Para añadir campos,
+     nuevos, también actualiza el modelo en contact.component.ts
+     y el schema en arete-api/main.py
+     ============================================================ -->
+<section id="contact" class="contact-section">
+    <div class="contact-container">
+
+        <!-- COLUMNA IZQUIERDA: texto y datos -->
+        <div class="contact-info">
+            <div class="section-line"></div>
+            <p class="section-overline">Toma el primer paso</p>
+            <h2 class="section-title">
+                Hablemos <span class="accent">juntos.</span>
+            </h2>
+            <p class="contact-body">
+                ¿Tienes preguntas sobre las clases, los horarios o los precios? Escríbenos y te responderemos lo antes
+                posible.
+            </p>
+
+            <!-- Datos de contacto rápidos -->
+            <div class="contact-details">
+                <div class="detail-item">
+                    <div class="detail-icon">
+                        <i class="fa fa-instagram"></i>
+                    </div>
+                    <div>
+                        <p class="detail-label">Instagram</p>
+                        <a href="https://www.instagram.com/arete.dancestudio/" target="_blank"
+                            rel="noopener">&#64;arete.dancestudio</a>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-icon">
+                        <i class="fa fa-map-marker"></i>
+                    </div>
+                    <div>
+                        <p class="detail-label">Horario de clases</p>
+                        <span>Lunes a Viernes · 17:00 – 22:00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COLUMNA DERECHA: formulario -->
+        <div class="contact-form-wrapper">
+
+            <!-- Mensaje de éxito -->
+            <div class="alert-success" *ngIf="successMessage">
+                <i class="fa fa-check-circle"></i>
+                {{ successMessage }}
+            </div>
+
+            <!-- Mensaje de error -->
+            <div class="alert-error" *ngIf="errorMessage">
+                <i class="fa fa-exclamation-triangle"></i>
+                {{ errorMessage }}
+            </div>
+
+            <form #contactForm="ngForm" (ngSubmit)="onSubmit(contactForm)" class="contact-form">
+
+                <!-- NOMBRE -->
+                <div class="form-field">
+                    <label for="nombre">Nombre completo *</label>
+                    <input type="text" id="nombre" name="name" [(ngModel)]="contactData.name" required
+                        #nameField="ngModel" placeholder="Tu nombre">
+                    <!-- Validación inline -->
+                    <span class="field-error" *ngIf="nameField.invalid && nameField.touched">
+                        El nombre es obligatorio.
+                    </span>
+                </div>
+
+                <!-- EMAIL -->
+                <div class="form-field">
+                    <label for="email">Correo electrónico *</label>
+                    <input type="email" id="email" name="email" [(ngModel)]="contactData.email" required email
+                        #emailField="ngModel" placeholder="tu@email.com">
+                    <span class="field-error" *ngIf="emailField.invalid && emailField.touched">
+                        Introduce un email válido.
+                    </span>
+                </div>
+
+                <!-- TELÉFONO -->
+                <div class="form-field">
+                    <label for="telefono">Teléfono <span class="optional">(opcional)</span></label>
+                    <input type="tel" id="telefono" name="phone" [(ngModel)]="contactData.phone" pattern="^\d{9}$"
+                        placeholder="600 000 000" #phoneField="ngModel">
+                    <span class="field-error" *ngIf="phoneField.invalid && phoneField.touched">
+                        9 dígitos sin espacios.
+                    </span>
+                </div>
+
+                <!-- MENSAJE -->
+                <div class="form-field full-width">
+                    <label for="mensaje">Mensaje *</label>
+                    <textarea id="mensaje" name="message" [(ngModel)]="contactData.message" required
+                        #messageField="ngModel" rows="5" placeholder="¿Sobre qué quieres preguntarnos?"></textarea>
+                    <span class="field-error" *ngIf="messageField.invalid && messageField.touched">
+                        El mensaje no puede estar vacío.
+                    </span>
+                </div>
+
+                <!-- BOTÓN DE ENVÍO -->
+                <div class="form-actions">
+                    <button type="submit" class="btn-md-primary" [disabled]="contactForm.invalid || isSubmitting">
+                        <!-- Spinner de carga mientras envía -->
+                        <span class="spinner" *ngIf="isSubmitting"></span>
+                        {{ isSubmitting ? 'Enviando...' : 'Enviar mensaje' }}
+                    </button>
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+</section>

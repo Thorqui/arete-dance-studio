@@ -1,0 +1,67 @@
+<!-- ============================================================
+     ABOUT - Sección Quiénes Somos
+     Diseño moderno con grid de fotos y texto descriptivo.
+     Modifica el texto del párrafo para actualizar el contenido.
+     ============================================================ -->
+<section id="about" class="about-section">
+    <div class="about-container">
+
+        <!-- COLUMNA IZQUIERDA: Imágenes en mosaico -->
+        <div class="about-images" [class.order-last]="cms.aboutData()?.layout?.imageAlignment === 'right'">
+            <div class="img-main">
+                <img [src]="cms.aboutData()?.images?.[0] || 'assets/img/Grupal2.jpg'" alt="Grupo de baile Arete Dance Studio" loading="lazy">
+            </div>
+            <div class="img-secondary">
+                <img [src]="cms.aboutData()?.images?.[1] || 'assets/img/Grupal1.jpg'" alt="Clases de baile en Arete" loading="lazy">
+                <img [src]="cms.aboutData()?.images?.[2] || 'assets/img/Grupal3.jpg'" alt="Ambiente en Arete Dance Studio" loading="lazy">
+            </div>
+        </div>
+
+        <!-- COLUMNA DERECHA: Texto descriptivo -->
+        <div class="about-text">
+            <div class="section-line"></div>
+            <p class="section-overline">{{ cms.aboutData()?.overline || 'Sobre nosotros' }}</p>
+            <h2 class="section-title">
+                <ng-container *ngIf="cms.aboutData() as data; else defaultTitleAbout">
+                    {{ data.title }}<br><span class="accent">{{ data.accent }}</span>
+                </ng-container>
+                <ng-template #defaultTitleAbout>
+                    Pasión por<br>el <span class="accent">baile.</span>
+                </ng-template>
+            </h2>
+            <p class="about-body">
+                {{ cms.aboutData()?.bodyPrimary || 'Somos Arete Dance Studio, una academia fundada en 2023 pero con muchos años de baile en nuestras piernas. Ofrecemos clases de alta calidad en bachata, salsa, comercial y ladys styling, con instructores experimentados comprometidos con crear un ambiente divertido y acogedor para todos los niveles.' }}
+            </p>
+            <p class="about-body secondary">
+                {{ cms.aboutData()?.bodySecondary || 'Creemos que el baile es una forma maravillosa de expresión, ejercicio y conexión social. ¡Únete a nuestra comunidad y descubre tu ritmo!' }}
+            </p>
+
+            <!-- Pequeños datos destacados -->
+            <div class="about-highlights" *ngIf="cms.aboutData()?.highlights as highlights; else defaultHighlights">
+                <div class="highlight" *ngFor="let h of highlights">
+                    <i class="fa {{ h.icon }}"></i>
+                    <span>{{ h.label }}</span>
+                </div>
+            </div>
+            <ng-template #defaultHighlights>
+                <div class="about-highlights">
+                    <div class="highlight">
+                        <i class="fa fa-graduation-cap"></i>
+                        <span>Todos los niveles</span>
+                    </div>
+                    <div class="highlight">
+                        <i class="fa fa-heart"></i>
+                        <span>Ambiente familiar</span>
+                    </div>
+                    <div class="highlight">
+                        <i class="fa fa-music"></i>
+                        <span>4 estilos de baile</span>
+                    </div>
+                </div>
+            </ng-template>
+
+            <a href="#contact" class="btn-md-primary mt-2">Únete ahora</a>
+        </div>
+
+    </div>
+</section>

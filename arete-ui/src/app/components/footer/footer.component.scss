@@ -1,0 +1,165 @@
+/* ============================================================
+   FOOTER COMPONENT STYLES
+   Pie de página oscuro con logo, navegación y redes sociales.
+   ============================================================ */
+
+.app-footer {
+    background-color: var(--md-surface);
+    border-top: 1px solid var(--md-outline);
+    padding: 64px 0 0;
+}
+
+/* 3 columnas: marca, redes, legal */
+.footer-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 40px 48px;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 48px;
+}
+
+/* ============================================================
+   MARCA EN EL FOOTER
+   ============================================================ */
+.footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .brand-primary {
+        font-family: var(--md-font-display, grasping);
+        font-size: 2rem;
+        color: var(--md-primary);
+        letter-spacing: 2px;
+    }
+
+    .brand-secondary {
+        font-size: 0.7rem;
+        font-weight: 600;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: var(--md-on-surface);
+        margin-top: -6px;
+    }
+
+    p {
+        color: rgba(200, 200, 232, 0.45);
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-top: 12px;
+        max-width: 280px;
+    }
+}
+
+/* ============================================================
+   COLUMNA LEGAL
+   ============================================================ */
+.footer-legal-nav {
+    .footer-nav-title {
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--md-on-surface);
+        margin: 0 0 16px;
+    }
+
+    ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        li a {
+            color: rgba(200, 200, 232, 0.55);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+
+            &:hover {
+                color: var(--md-secondary);
+            }
+        }
+    }
+}
+
+/* ============================================================
+   REDES SOCIALES
+   ============================================================ */
+.footer-social {
+    .footer-nav-title {
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--md-on-surface);
+        margin: 0 0 16px;
+    }
+
+    .social-links {
+        display: flex;
+        gap: 12px;
+
+        a {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--md-radius-md);
+            background: var(--md-surface-2);
+            border: 1px solid var(--md-outline);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--md-on-surface);
+            font-size: 1.2rem;
+            text-decoration: none;
+            transition: var(--md-transition);
+
+            &:hover {
+                background: var(--md-secondary);
+                border-color: var(--md-secondary);
+                color: #fff;
+                transform: translateY(-3px);
+                box-shadow: 0 6px 20px rgba(233, 30, 140, 0.3);
+            }
+        }
+    }
+}
+
+/* ============================================================
+   LÍNEA INFERIOR
+   ============================================================ */
+.footer-bottom {
+    border-top: 1px solid var(--md-outline);
+    text-align: center;
+    padding: 20px;
+
+    p {
+        font-size: 0.8rem;
+        color: rgba(200, 200, 232, 0.3);
+        margin: 0;
+    }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+    .footer-container {
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+        padding: 0 24px 32px;
+    }
+
+    .footer-brand {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 480px) {
+    .footer-container {
+        grid-template-columns: 1fr;
+    }
+}

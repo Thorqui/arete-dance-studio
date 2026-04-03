@@ -1,0 +1,71 @@
+<!-- ============================================================
+     HEADER - Navbar fija con glassmorphism y scroll-spy.
+     activeSection se actualiza automáticamente en el .ts al scroll.
+     Para añadir una sección nueva: añade un <li> aquí y el ID
+     correspondiente al array `sections` en header.component.ts
+     ============================================================ -->
+<header class="app-header" [class.scrolled]="isScrolled">
+    <nav class="nav-container">
+
+        <!-- LOGO / MARCA -->
+        <a href="#hero" class="brand" (click)="closeMenu()">
+            <img src="assets/brand/Isotipo BN Negativo.png" alt="Arete Isotipo" class="brand-isotipo">
+            <div class="brand-text">
+                <span class="brand-primary">Arete</span>
+                <span class="brand-secondary">Dance Studio</span>
+            </div>
+        </a>
+
+        <!-- BOTÓN HAMBURGUESA - solo visible en móvil -->
+        <button class="hamburger" (click)="toggleMenu()" [class.open]="isMenuOpen" aria-label="Menú">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <!-- MENÚ DE NAVEGACIÓN
+         [class.active]="activeSection === 'xxx'" → resalta según scroll
+    -->
+        <ul class="nav-links" [class.open]="isMenuOpen">
+            <li>
+                <a href="#hero" [class.active]="activeSection === 'hero'" (click)="closeMenu()">
+                    Inicio
+                </a>
+            </li>
+            <li>
+                <a href="#about" [class.active]="activeSection === 'about'" (click)="closeMenu()"
+                    *ngIf="!authService.isAdmin()">
+                    Nosotros
+                </a>
+            </li>
+            <li>
+                <a href="#styles" [class.active]="activeSection === 'styles'" (click)="closeMenu()"
+                    *ngIf="!authService.isAdmin()">
+                    Estilos
+                </a>
+            </li>
+            <li>
+                <a href="#schedule" [class.active]="activeSection === 'schedule'" (click)="closeMenu()"
+                    *ngIf="!authService.isAdmin()">
+                    Horarios
+                </a>
+            </li>
+            <li *ngIf="authService.isAdmin()">
+                <a href="/admin" class="text-warning" (click)="closeMenu()">
+                    Admin Panel
+                </a>
+            </li>
+            <li *ngIf="!authService.isLoggedIn()">
+                <a href="/login" class="nav-cta" (click)="closeMenu()">
+                    Login
+                </a>
+            </li>
+            <li *ngIf="authService.isLoggedIn()">
+                <a href="javascript:void(0)" class="nav-cta" style="background: red;" (click)="logout()">
+                    Salir
+                </a>
+            </li>
+        </ul>
+
+    </nav>
+</header>

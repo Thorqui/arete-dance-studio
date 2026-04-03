@@ -1,0 +1,232 @@
+/* ============================================================
+   SCHEDULE COMPONENT STYLES
+   Tabla de horarios con diseño oscuro y color por clase.
+   Para cambiar el color de una clase, edita las variables
+   $bachata-color, $salsa-color, etc. en este archivo.
+   ============================================================ */
+
+/* Colores de cada estilo - cámbialos aquí para toda la tabla */
+$bachata-color: #F59E0B;
+/* Ámbar cálido */
+$salsa-color: #EF4444;
+/* Rojo vibrante */
+$comercial-color: #3B82F6;
+/* Azul eléctrico */
+$ladys-color: #A855F7;
+/* Violeta */
+
+.schedule-section {
+    background-color: var(--md-surface);
+    padding: 120px 0;
+    border-top: 1px solid var(--md-outline);
+}
+
+/* ============================================================
+   CABECERA
+   ============================================================ */
+.schedule-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 40px;
+}
+
+.schedule-header {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 52px;
+
+    .section-overline {
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        color: var(--md-primary);
+        margin: 0;
+    }
+
+    .section-title {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        font-weight: 700;
+        color: var(--md-on-background);
+        line-height: 1.1;
+        margin: 0;
+
+        .accent {
+            color: var(--md-secondary);
+            font-family: comicate, cursive;
+        }
+    }
+}
+
+/* ============================================================
+   CONTENEDOR CON SCROLL HORIZONTAL EN MÓVIL
+   ============================================================ */
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    /* Scroll en pantallas pequeñas */
+    border-radius: var(--md-radius-lg);
+    box-shadow: var(--md-shadow-3);
+
+    /* Ocultar scrollbar pero mantener funcionalidad */
+    &::-webkit-scrollbar {
+        height: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: var(--md-primary);
+        border-radius: 2px;
+    }
+}
+
+/* ============================================================
+   TABLA DE HORARIOS
+   ============================================================ */
+.schedule-table {
+    width: 100%;
+    min-width: 640px;
+    /* Ancho mínimo antes de que haga scroll */
+    border-collapse: collapse;
+    background: var(--md-surface-2);
+
+    th,
+    td {
+        padding: 16px 20px;
+        text-align: center;
+        font-size: 0.9rem;
+        border: 1px solid var(--md-outline);
+        transition: var(--md-transition);
+    }
+
+    /* Cabecera de días */
+    thead th {
+        background: var(--md-surface-3);
+        color: var(--md-on-background);
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+
+        &.time-col {
+            background: transparent;
+            border: none;
+        }
+    }
+
+    /* Columna de hora */
+    .time-col {
+        color: var(--md-on-surface);
+        font-weight: 600;
+        font-size: 0.85rem;
+        white-space: nowrap;
+        background: var(--md-surface-2);
+        border-right: 2px solid var(--md-outline) !important;
+    }
+
+    /* Celda vacía */
+    .empty {
+        background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Hover en fila */
+    tbody tr:hover td:not(.empty) {
+        filter: brightness(1.15);
+    }
+
+    /* ==================== COLORES DE CLASES ==================== */
+    /* Para cambiar el color de un estilo modifica el color aquí */
+
+    .class-bachata {
+        background: rgba($bachata-color, 0.12);
+        color: $bachata-color;
+        font-weight: 600;
+        border-color: rgba($bachata-color, 0.2) !important;
+        cursor: pointer;
+    }
+
+    .class-salsa {
+        background: rgba($salsa-color, 0.12);
+        color: $salsa-color;
+        font-weight: 600;
+        border-color: rgba($salsa-color, 0.2) !important;
+        cursor: pointer;
+    }
+
+    .class-comercial {
+        background: rgba($comercial-color, 0.12);
+        color: $comercial-color;
+        font-weight: 600;
+        border-color: rgba($comercial-color, 0.2) !important;
+        cursor: pointer;
+    }
+
+    .class-ladys {
+        background: rgba($ladys-color, 0.12);
+        color: $ladys-color;
+        font-weight: 600;
+        border-color: rgba($ladys-color, 0.2) !important;
+        cursor: pointer;
+    }
+}
+
+/* ============================================================
+   LEYENDA DE COLORES
+   ============================================================ */
+.schedule-legend {
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+    padding: 20px 24px;
+    background: var(--md-surface-2);
+    border-radius: var(--md-radius-md);
+    border: 1px solid var(--md-outline);
+    width: fit-content;
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.875rem;
+        color: var(--md-on-surface);
+        font-weight: 500;
+    }
+
+    /* Punto de color */
+    .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        display: inline-block;
+
+        &.bachata {
+            background: $bachata-color;
+        }
+
+        &.salsa {
+            background: $salsa-color;
+        }
+
+        &.comercial {
+            background: $comercial-color;
+        }
+
+        &.ladys {
+            background: $ladys-color;
+        }
+    }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 600px) {
+    .schedule-section {
+        padding: 80px 0;
+    }
+
+    .schedule-container {
+        padding: 0 24px;
+    }
+}
