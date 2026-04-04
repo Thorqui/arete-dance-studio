@@ -9,6 +9,20 @@ export interface CmsSection {
   content: any;
 }
 
+const DEFAULT_SCHEDULE = {
+  overline: "Planifica tu semana",
+  title: "Nuestros",
+  accent: "horarios.",
+  days: ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"],
+  slots: [
+    { "time": "17:00 – 18:00", "classes": ["bachata", "", "comercial", "", "ladys"] },
+    { "time": "18:00 – 19:00", "classes": ["salsa", "bachata", "salsa", "comercial", "bachata"] },
+    { "time": "19:00 – 20:00", "classes": ["comercial", "salsa", "ladys", "salsa", ""] },
+    { "time": "20:00 – 21:00", "classes": ["ladys", "comercial", "bachata", "ladys", "salsa"] },
+    { "time": "21:00 – 22:00", "classes": ["", "ladys", "salsa", "bachata", "comercial"] }
+  ]
+};
+
 @Injectable({
   providedIn: 'root'
 })
@@ -20,7 +34,7 @@ export class CmsService {
   heroData = signal<any>(null);
   aboutData = signal<any>(null);
   stylesData = signal<any>(null);
-  scheduleData = signal<any>(null);
+  scheduleData = signal<any>(DEFAULT_SCHEDULE);
   footerData = signal<any>(null);
   pwaConfigData = signal<any>(null);
 

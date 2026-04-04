@@ -7,11 +7,11 @@
     <div class="schedule-container">
 
         <!-- CABECERA -->
-        <div class="schedule-header" *ngIf="cms.scheduleData() as data">
+        <div class="schedule-header">
             <div class="section-line"></div>
-            <p class="section-overline">{{ data.overline || 'Planifica tu semana' }}</p>
+            <p class="section-overline">{{ cms.scheduleData()?.overline || 'Planifica tu semana' }}</p>
             <h2 class="section-title">
-                {{ data.title || 'Nuestros' }} <span class="accent">{{ data.accent || 'horarios.' }}</span>
+                {{ cms.scheduleData()?.title || 'Nuestros' }} <span class="accent">{{ cms.scheduleData()?.accent || 'horarios.' }}</span>
             </h2>
         </div>
 
