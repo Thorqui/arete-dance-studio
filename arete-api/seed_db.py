@@ -141,10 +141,16 @@ def seed_data(db: Session):
     # --- FASE 3: Semilla Relacional (Usuarios y Clases) ---
     import datetime
     
-    admin_user = db.query(models.User).filter(models.User.email == "admin@arete.com").first()
+    admin_user = db.query(models.User).filter(models.User.email == "moniarete").first()
     if not admin_user:
-        admin_user = models.User(email="admin@arete.com", password_hash="admin123", role="admin", name="Admin Arete")
+        admin_user = models.User(email="moniarete", password_hash="moni2026", role="admin", name="Moni Arete")
         db.add(admin_user)
+        
+    # Mantener el anterior por si acaso, o podrías borrarlo si quieres
+    old_admin = db.query(models.User).filter(models.User.email == "admin@arete.com").first()
+    if not old_admin:
+        old_admin = models.User(email="admin@arete.com", password_hash="admin123", role="admin", name="Admin Arete")
+        db.add(old_admin)
         
     student_user = db.query(models.User).filter(models.User.email == "alumno@arete.com").first()
     if not student_user:
