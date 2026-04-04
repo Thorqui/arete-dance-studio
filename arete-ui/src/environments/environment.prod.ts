@@ -3,5 +3,5 @@
 // Cambia esta URL por la URL real de tu API en Vercel tras el primer despliegue
 export const environment = {
   production: true,
-  apiUrl: 'https://arete-api.vercel.app'
+  apiUrl: 'https://arete-dance-studio-b19iin30d-aitorquilez-5026s-projects.vercel.app'
 };

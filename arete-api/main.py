@@ -18,6 +18,7 @@ ALLOWED_ORIGINS = [
     "http://localhost:3000",           # Por si se usa otro puerto local
     "https://arete-ui.vercel.app",     # Frontend en Vercel (actualiza tras el deploy)
     "https://arete-dance.vercel.app",  # Alternativa de nombre
+    "https://arete-dance-studio-x65l.vercel.app", # Tu URL actual de Vercel
 ]
 
 # Configure CORS so the Angular frontend can communicate with the backend
