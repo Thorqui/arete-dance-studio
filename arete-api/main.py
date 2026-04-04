@@ -8,17 +8,18 @@ import models
 import schemas
 
 # Create tables
-Base.metadata.create_all(bind=engine)
+# Base.metadata.create_all(bind=engine) # Comentado para acelerar arranque en Vercel
 
 app = FastAPI(title="Arete Dance Academy API")
 
 # Orígenes permitidos: desarrollo local + producción Vercel
 ALLOWED_ORIGINS = [
-    "http://localhost:4200",           # Angular dev server
-    "http://localhost:3000",           # Por si se usa otro puerto local
-    "https://arete-ui.vercel.app",     # Frontend en Vercel (actualiza tras el deploy)
-    "https://arete-dance.vercel.app",  # Alternativa de nombre
-    "https://arete-dance-studio-x65l.vercel.app", # Tu URL actual de Vercel
+    "http://localhost:4200",
+    "http://localhost:3000",
+    "https://arete-ui.vercel.app",
+    "https://arete-dance.vercel.app",
+    "https://arete-dance-studio-x65l.vercel.app",
+    "https://arete-dance-studio-x65l.vercel.app/", # Variante con barra final
 ]
 
 # Configure CORS so the Angular frontend can communicate with the backend
