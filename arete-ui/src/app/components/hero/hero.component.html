@@ -4,93 +4,140 @@
      El overlay oscuro asegura que el texto sea legible.
      ============================================================ -->
 <section id="hero" class="hero-section">
+  <!-- VIDEO DE FONDO A PANTALLA COMPLETA -->
+  <div
+    class="hero-video-wrapper"
+    [class.video-failed]="videoFailed"
+    [ngClass]="cms.heroData()?.layout?.alignment === 'center' ? 'text-center' : ''"
+  >
+    <!-- #heroVideo: referencia para forzar play programáticamente -->
+    <video
+      #heroVideo
+      class="hero-video"
+      [src]="
+        cms.heroData()?.videoUrl ||
+        'assets/img/AQNT1hxpNCSwTf6AHXNXU9-fjuRiuMMCiD2doW344H7v-IvTiB_aFHZb--il2aI6NZ6v47UpGHKNJoOMq5ZkSqp7f6XDGNkwtklsmOk..mp4'
+      "
+      autoplay
+      loop
+      muted
+      [muted]="true"
+      playsinline
+      preload="auto"
+      (error)="videoFailed = true"
+    ></video>
+    <!-- Capa de degradado oscura sobre el video -->
+    <div class="hero-overlay"></div>
+  </div>
 
-    <!-- VIDEO DE FONDO A PANTALLA COMPLETA -->
-    <div class="hero-video-wrapper" [class.video-failed]="videoFailed" [ngClass]="cms.heroData()?.layout?.alignment === 'center' ? 'text-center' : ''">
-        <!-- #heroVideo: referencia para forzar play programáticamente -->
-        <video #heroVideo class="hero-video"
-            [src]="cms.heroData()?.videoUrl || 'assets/img/AQNT1hxpNCSwTf6AHXNXU9-fjuRiuMMCiD2doW344H7v-IvTiB_aFHZb--il2aI6NZ6v47UpGHKNJoOMq5ZkSqp7f6XDGNkwtklsmOk..mp4'"
-            autoplay loop muted [muted]="true" playsinline preload="auto" (error)="videoFailed = true">
-        </video>
-        <!-- Capa de degradado oscura sobre el video -->
-        <div class="hero-overlay"></div>
+  <!-- CONTENIDO PRINCIPAL DEL HERO -->
+  <div class="hero-content">
+    <!-- Etiqueta pequeña decorativa -->
+    <div class="hero-badge fade-in-up">
+      <span>&#9670; {{ cms.heroData()?.badge || 'Tu academia de baile' }}</span>
     </div>
 
-    <!-- CONTENIDO PRINCIPAL DEL HERO -->
-    <div class="hero-content">
+    <!-- Título principal -->
+    <h1 class="hero-title fade-in-up">
+      <ng-container *ngIf="cms.heroData() as data; else defaultTitle">
+        {{ data.title }}<br />
+        <span class="title-accent">{{ data.accent }}</span>
+      </ng-container>
+      <ng-template #defaultTitle>
+        Siente<br />
+        <span class="title-accent">el movimiento.</span>
+      </ng-template>
+    </h1>
 
-        <!-- Etiqueta pequeña decorativa -->
-        <div class="hero-badge fade-in-up">
-            <span>&#9670; {{ cms.heroData()?.badge || 'Tu academia de baile' }}</span>
-        </div>
+    <!-- Texto descriptivo -->
+    <p class="hero-body fade-in-up">
+      {{
+        cms.heroData()?.description ||
+          'Aprende a bailar, conecta con personas con la misma pasión y disfruta de un ambiente único. Salsa, Bachata, Comercial y más — tu ritmo te espera.'
+      }}
+    </p>
 
-        <!-- Título principal -->
-        <h1 class="hero-title fade-in-up">
-            <ng-container *ngIf="cms.heroData() as data; else defaultTitle">
-                {{ data.title }}<br>
-                <span class="title-accent">{{ data.accent }}</span>
-            </ng-container>
-            <ng-template #defaultTitle>
-                Siente<br>
-                <span class="title-accent">el movimiento.</span>
-            </ng-template>
-        </h1>
-
-        <!-- Texto descriptivo -->
-        <p class="hero-body fade-in-up">
-            {{ cms.heroData()?.description || 'Aprende a bailar, conecta con personas con la misma pasión y disfruta de un ambiente único. Salsa, Bachata, Comercial y más — tu ritmo te espera.' }}
-        </p>
-
-        <!-- BOTONES DE ACCIÓN -->
-        <div class="hero-actions fade-in-up">
-            <a href="#styles" class="btn-md-primary">
-                Explorar estilos
-            </a>
-            <a href="https://www.instagram.com/arete.dancestudio/" target="_blank" rel="noopener"
-                class="btn-md-outline">
-                <i class="fa fa-instagram"></i> Instagram
-            </a>
-        </div>
-
-        <!-- ESTADÍSTICAS RÁPIDAS -->
-        <div class="hero-stats fade-in-up" *ngIf="cms.heroData()?.stats as stats; else defaultStats">
-            <ng-container *ngFor="let stat of stats; let last = last">
-                <div class="stat">
-                    <strong>{{ stat.value }}</strong>
-                    <span>{{ stat.label }}</span>
-                </div>
-                <div class="stat-divider" *ngIf="!last"></div>
-            </ng-container>
-        </div>
-        <ng-template #defaultStats>
-            <div class="hero-stats fade-in-up">
-                <div class="stat">
-                    <strong>+100</strong>
-                    <span>Alumnos</span>
-                </div>
-                <div class="stat-divider"></div>
-                <div class="stat">
-                    <strong>4</strong>
-                    <span>Estilos</span>
-                </div>
-                <div class="stat-divider"></div>
-                <div class="stat">
-                    <strong>5</strong>
-                    <span>Días / semana</span>
-                </div>
-            </div>
-        </ng-template>
-
+    <!-- BOTONES DE ACCIÓN -->
+    <div class="hero-actions fade-in-up">
+      <a href="#styles" class="btn-md-primary"> Explorar estilos </a>
+      <a
+        href="https://www.instagram.com/arete.dancestudio/"
+        target="_blank"
+        rel="noopener"
+        class="btn-md-outline"
+      >
+        <i class="fa fa-instagram"></i> Instagram
+      </a>
     </div>
 
-    <!-- INDICADOR DE SCROLL ANIMADO -->
-    <div class="scroll-indicator">
-        <div class="scroll-dot"></div>
+    <!-- ESTADÍSTICAS RÁPIDAS -->
+    <div class="hero-stats fade-in-up" *ngIf="cms.heroData()?.stats as stats; else defaultStats">
+      <ng-container *ngFor="let stat of stats; let last = last">
+        <div class="stat">
+          <strong>{{ stat.value }}</strong>
+          <span>{{ stat.label }}</span>
+        </div>
+        <div class="stat-divider" *ngIf="!last"></div>
+      </ng-container>
     </div>
+    <ng-template #defaultStats>
+      <div class="hero-stats fade-in-up">
+        <div class="stat">
+          <strong>+100</strong>
+          <span>Alumnos</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <strong>4</strong>
+          <span>Estilos</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <strong>5</strong>
+          <span>Días / semana</span>
+        </div>
+      </div>
+    </ng-template>
+  </div>
 
+  <!-- INDICADOR DE SCROLL ANIMADO -->
+  <div class="scroll-indicator">
+    <div class="scroll-dot"></div>
+  </div>
 </section>
 
 <!-- Additional Landing Page Sections -->
+<ng-container
+  *ngIf="websiteContent.hasPoster() && websiteContent.poster().position === 'above'"
+  [ngTemplateOutlet]="posterSection"
+></ng-container>
+<section class="website-highlight" *ngIf="websiteContent.hasContent()">
+  <div class="website-highlight__inner">
+    <div class="website-highlight__copy">
+      <p class="website-highlight__eyebrow">NOVEDADES</p>
+      <h2 *ngIf="websiteContent.highlight().title">{{ websiteContent.highlight().title }}</h2>
+      <p *ngIf="websiteContent.highlight().body">{{ websiteContent.highlight().body }}</p>
+      <a
+        *ngIf="websiteContent.highlight().linkLabel && websiteContent.highlight().linkUrl"
+        class="btn-md-primary"
+        [href]="websiteContent.highlight().linkUrl"
+      >
+        {{ websiteContent.highlight().linkLabel }}
+      </a>
+    </div>
+  </div>
+</section>
+<ng-container
+  *ngIf="websiteContent.hasPoster() && websiteContent.poster().position === 'below'"
+  [ngTemplateOutlet]="posterSection"
+></ng-container>
+<ng-template #posterSection>
+  <section class="website-poster" aria-label="Cartel destacado">
+    <div class="website-poster__inner">
+      <img [src]="websiteContent.poster().image" alt="Cartel de Aretè Dance Studio" />
+    </div>
+  </section>
+</ng-template>
 <app-about></app-about>
 <app-styles></app-styles>
 <app-schedule></app-schedule>

@@ -6,15 +6,18 @@ from sqlalchemy.orm import Session
 from database import engine, Base, get_db
 import models
 import schemas
+from push_reminders import router as push_router
 
 # Create tables
 # Base.metadata.create_all(bind=engine) # Comentado para acelerar arranque en Vercel
 
 app = FastAPI(title="Arete Dance Academy API")
+app.include_router(push_router)
 
 # Orígenes permitidos: desarrollo local + producción Vercel
 ALLOWED_ORIGINS = [
     "http://localhost:4200",
+    "http://127.0.0.1:4200",
     "http://localhost:3000",
     "https://arete-ui.vercel.app",
     "https://arete-dance.vercel.app",

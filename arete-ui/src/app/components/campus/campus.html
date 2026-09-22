@@ -1,0 +1,1701 @@
+<div
+  class="campus"
+  [class.role-student]="auth.isUser()"
+  [class.role-teacher]="auth.isTeacher()"
+  [class.role-admin]="auth.isAdmin()"
+>
+  <aside class="sidebar">
+    <a class="brand" routerLink="/campus/inicio"
+      ><img src="assets/brand/isotipo.png" alt="" /><span>aretè<small>DANCE STUDIO</small></span></a
+    >
+    <div class="workspace-label">TU ESPACIO DE BAILE</div>
+    <nav aria-label="Navegación de gestión">
+      <a routerLink="/campus/inicio" routerLinkActive="active"
+        ><i class="fa fa-home" aria-hidden="true"></i> Inicio</a
+      >
+      <a routerLink="/campus/calendario" routerLinkActive="active"
+        ><i class="fa fa-calendar" aria-hidden="true"></i> Calendario</a
+      >
+      <a routerLink="/campus/gestion" routerLinkActive="active"
+        ><i class="fa fa-th-large" aria-hidden="true"></i>
+        {{ auth.isTeacher() ? 'Mis clases' : 'Gestión' }}</a
+      >
+      <a routerLink="/campus/chat" routerLinkActive="active"
+        ><i class="fa fa-comments" aria-hidden="true"></i> Chat
+        @if (chat.unread().length) {
+          <span class="nav-badge" [attr.aria-label]="chat.unread().length + ' mensajes sin leer'">{{
+            chat.unread().length
+          }}</span>
+        }
+      </a>
+    </nav>
+    <div class="sidebar-bottom">
+      <p>Un espacio para aprender,<br />conectar y bailar.</p>
+      <a routerLink="/">Visitar la web <span aria-hidden="true">↗</span></a>
+    </div>
+  </aside>
+  <div class="workspace">
+    <header class="topbar">
+      <span class="role-chip">{{ roleLabel() }}</span>
+      <div class="account">
+        <span class="avatar">{{ name().charAt(0) }}</span
+        ><strong>{{ name() }}</strong
+        ><button type="button" class="text-button" (click)="logout()">Salir</button>
+      </div>
+    </header>
+    <main [class.calendar-main]="section() === 'calendario'">
+      <div class="demo-note">
+        <span class="demo-dot"></span> Espacio de prueba · Los cambios se guardan solo en este
+        navegador.
+      </div>
+      @if (store.storageWarning()) {
+        <p class="feedback error" role="alert">{{ store.storageWarning() }}</p>
+      }
+      @if (notice()) {
+        <p class="feedback success" role="status">{{ notice() }}</p>
+      }
+      @if (error()) {
+        <p class="feedback error" role="alert">{{ error() }}</p>
+      }
+
+      @if (auth.isUser() && store.todayPendingResponses().length) {
+        <section class="reminder-banner attendance-prompt" aria-label="Confirmación de asistencia">
+          <div>
+            <span class="eyebrow">TU CLASE DE HOY</span>
+            <h2>¿Vas a asistir?</h2>
+            <p>Confírmanos tu situación para que profesores y administración puedan organizarse.</p>
+          </div>
+          @for (lesson of store.todayPendingResponses(); track lesson.id) {
+            <article class="attendance-prompt-card">
+              <strong>{{ lesson.name }} · {{ lesson.time }}</strong>
+              <span>{{ lesson.room }} · {{ store.teacherNames(lesson) }}</span>
+              <div class="attendance-choice">
+                <button type="button" (click)="respondAttendance(lesson, 'going')">Sí, voy</button>
+                <button type="button" (click)="respondAttendance(lesson, 'not-going')">
+                  No puedo asistir
+                </button>
+                <button type="button" (click)="respondAttendance(lesson, 'unsure')">
+                  Aún no lo sé
+                </button>
+              </div>
+            </article>
+          }
+        </section>
+      }
+
+      @if (section() === 'inicio') {
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">TU RITMO, TU ESPACIO</p>
+            <h1>Hola, {{ name() }}<span class="pink">.</span></h1>
+            <p>
+              {{
+                auth.isAdmin()
+                  ? 'Todo lo que necesitas para organizar la academia.'
+                  : auth.isTeacher()
+                    ? 'Prepara tus clases y acompaña a tus alumnos.'
+                    : 'Tu próxima clase empieza aquí. ¿Bailamos?'
+              }}
+            </p>
+          </div>
+          <a class="primary-button" routerLink="/campus/calendario"
+            >{{ auth.isAdmin() ? 'Organizar calendario' : 'Ver calendario' }}
+            <span aria-hidden="true">↗</span></a
+          >
+        </div>
+        <div class="stats">
+          <article>
+            <span>Próximas clases</span><strong>{{ upcoming().length }}</strong
+            ><small>{{ auth.isUser() ? 'Con tu plaza confirmada' : 'En tu agenda' }}</small>
+          </article>
+          <article>
+            <span>{{
+              auth.isAdmin()
+                ? 'Alumnos'
+                : auth.isTeacher()
+                  ? 'Próxima sesión'
+                  : 'Clases disponibles'
+            }}</span
+            ><strong>{{
+              auth.isAdmin()
+                ? store.students().length
+                : auth.isTeacher()
+                  ? upcoming()[0]?.time || '—'
+                  : available().length
+            }}</strong
+            ><small>{{
+              auth.isAdmin()
+                ? 'En la academia'
+                : auth.isTeacher()
+                  ? upcoming()[0]?.name || 'Sin clases pendientes'
+                  : 'Explora el calendario'
+            }}</small>
+          </article>
+          <article class="accent-stat">
+            <span>Tu espacio</span><strong>{{ roleLabel() }}</strong
+            ><small>{{
+              auth.isUser() ? 'Reserva y gestiona tus clases' : 'Comparte tu pasión por el baile'
+            }}</small>
+          </article>
+        </div>
+        @if (!auth.isUser()) {
+          <section class="attendance-board" aria-labelledby="attendance-board-title">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">ASISTENCIA DE HOY</p>
+                <h2 id="attendance-board-title">Quién viene a clase</h2>
+              </div>
+              <span>{{ todayManagedLessons().length }} clases hoy</span>
+            </div>
+            <div class="attendance-board-grid">
+              @for (lesson of todayManagedLessons(); track lesson.id) {
+                <article class="attendance-summary-card">
+                  <div>
+                    <span class="mini-label">{{ lesson.time }} · {{ lesson.room }}</span>
+                    <h3>{{ lesson.name }}</h3>
+                    <p>{{ store.teacherNames(lesson) }}</p>
+                  </div>
+                  <div class="attendance-summary-counts">
+                    <span class="going">✓ {{ responseStudents(lesson, 'going').length }} van</span>
+                    <span class="not-going">
+                      × {{ responseStudents(lesson, 'not-going').length }} no van
+                    </span>
+                    <span class="unsure">? {{ responseStudents(lesson, 'unsure').length }} dudan</span>
+                    <span>{{ responseStudents(lesson, null).length }} sin responder</span>
+                  </div>
+                  <div class="attendance-names">
+                    @if (responseStudents(lesson, 'going').length) {
+                      <p><strong>Van:</strong> {{ responseStudents(lesson, 'going').join(', ') }}</p>
+                    }
+                    @if (responseStudents(lesson, 'not-going').length) {
+                      <p>
+                        <strong>No van:</strong>
+                        {{ responseStudents(lesson, 'not-going').join(', ') }}
+                      </p>
+                    }
+                    @if (responseStudents(lesson, 'unsure').length) {
+                      <p>
+                        <strong>Aún no lo saben:</strong>
+                        {{ responseStudents(lesson, 'unsure').join(', ') }}
+                      </p>
+                    }
+                  </div>
+                </article>
+              } @empty {
+                <p class="empty-request">No tienes clases pendientes hoy.</p>
+              }
+            </div>
+          </section>
+        }
+        @if (auth.isAdmin()) {
+          <section class="website-editor" aria-labelledby="website-editor-title">
+            <div class="website-editor__heading">
+              <div>
+                <p class="eyebrow">CONTENIDO DE LA WEB</p>
+                <h2 id="website-editor-title">Bloque destacado</h2>
+                <p>
+                  Aparece entre la cabecera y “Quiénes somos”. Si lo dejas vacío, no ocupa espacio.
+                </p>
+              </div>
+              @if (websiteContent.hasContent()) {
+                <span class="published-badge">Publicado</span>
+              } @else {
+                <span class="draft-badge">Sin contenido</span>
+              }
+            </div>
+            <form class="website-editor__form content-only" (ngSubmit)="saveWebsiteContent()">
+              <div class="website-editor__fields">
+                <label for="website-title">Título</label>
+                <input
+                  id="website-title"
+                  name="websiteTitle"
+                  [(ngModel)]="websiteDraft.title"
+                  maxlength="120"
+                  placeholder="Ej. Puertas abiertas"
+                />
+                <label for="website-body">Texto</label>
+                <textarea
+                  id="website-body"
+                  name="websiteBody"
+                  [(ngModel)]="websiteDraft.body"
+                  maxlength="1200"
+                  rows="5"
+                  placeholder="Cuenta la novedad, evento o promoción…"
+                ></textarea>
+                <div class="form-grid">
+                  <div>
+                    <label for="website-link-label">Texto del botón</label>
+                    <input
+                      id="website-link-label"
+                      name="websiteLinkLabel"
+                      [(ngModel)]="websiteDraft.linkLabel"
+                      maxlength="40"
+                      placeholder="Más información"
+                    />
+                  </div>
+                  <div>
+                    <label for="website-link-url">Enlace del botón</label>
+                    <input
+                      id="website-link-url"
+                      name="websiteLinkUrl"
+                      [(ngModel)]="websiteDraft.linkUrl"
+                      maxlength="500"
+                      placeholder="https://… o /contacto"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="website-editor__actions">
+                <button
+                  class="text-button danger-text"
+                  type="button"
+                  (click)="clearWebsiteContent()"
+                >
+                  Retirar contenido
+                </button>
+                <button class="primary-button" type="submit">Publicar en la web</button>
+              </div>
+            </form>
+          </section>
+          <section class="website-editor poster-editor" aria-labelledby="poster-editor-title">
+            <div class="website-editor__heading">
+              <div>
+                <p class="eyebrow">CARTEL DE LA WEB</p>
+                <h2 id="poster-editor-title">Sección de imagen</h2>
+                <p>
+                  Publica un cartel independiente y decide si aparece antes o después del bloque
+                  destacado.
+                </p>
+              </div>
+              @if (websiteContent.hasPoster()) {
+                <span class="published-badge">Publicado</span>
+              } @else {
+                <span class="draft-badge">Sin cartel</span>
+              }
+            </div>
+            <form class="poster-editor__form" (ngSubmit)="saveWebsitePoster()">
+              <div class="website-editor__media">
+                <label for="website-poster">Imagen del cartel</label>
+                <label class="image-uploader" for="website-poster">
+                  @if (posterDraft.image) {
+                    <img [src]="posterDraft.image" alt="Vista previa del cartel" />
+                    <span>{{ posterImageName || 'Cambiar cartel' }}</span>
+                  } @else {
+                    <i class="fa fa-cloud-upload" aria-hidden="true"></i>
+                    <strong>Subir cartel</strong>
+                    <span>JPG, PNG o WebP · máximo 1,5 MB</span>
+                  }
+                </label>
+                <input
+                  id="website-poster"
+                  class="sr-only"
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp,image/gif"
+                  (change)="uploadWebsiteImage($event)"
+                />
+              </div>
+              <fieldset class="poster-position">
+                <legend>Orden en la web</legend>
+                <label>
+                  <input
+                    type="radio"
+                    name="posterPosition"
+                    value="above"
+                    [(ngModel)]="posterDraft.position"
+                  />
+                  Cartel encima del bloque
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    name="posterPosition"
+                    value="below"
+                    [(ngModel)]="posterDraft.position"
+                  />
+                  Cartel debajo del bloque
+                </label>
+              </fieldset>
+              <div class="website-editor__actions">
+                <button
+                  class="text-button danger-text"
+                  type="button"
+                  (click)="clearWebsitePoster()"
+                >
+                  Retirar cartel
+                </button>
+                <button class="primary-button" type="submit" [disabled]="!posterDraft.image">
+                  Publicar cartel
+                </button>
+              </div>
+            </form>
+          </section>
+        }
+        <div class="section-heading">
+          <h2>{{ auth.isUser() ? 'Tus próximas clases' : 'En tu agenda' }}</h2>
+          <a routerLink="/campus/gestion">Ver todas →</a>
+        </div>
+        <div class="lesson-list">
+          @for (lesson of upcoming().slice(0, 4); track lesson.id) {
+            <article class="lesson-row">
+              <div class="date-tile">{{ shortDate(lesson.date) }}</div>
+              <div class="lesson-info">
+                <span class="mini-label">{{ lesson.level || 'Nivel por confirmar' }} · {{ lesson.room }}</span>
+                <h3>{{ lesson.name }}</h3>
+                <p>
+                  {{ lesson.time }} · {{ lesson.duration }} min ·
+                  {{ store.teacherNames(lesson) }}
+                </p>
+              </div>
+              <span class="pill">{{
+                auth.isUser() ? 'Plaza confirmada' : store.activeIds(lesson).length + ' alumnos'
+              }}</span>
+            </article>
+          } @empty {
+            <div class="empty-state">
+              <h3>Tu agenda está libre</h3>
+              <p>
+                {{
+                  auth.isUser()
+                    ? 'Encuentra tu próxima clase en el calendario y reserva tu plaza.'
+                    : 'Las clases programadas aparecerán aquí.'
+                }}
+              </p>
+              <a routerLink="/campus/calendario">Ir al calendario →</a>
+            </div>
+          }
+        </div>
+        <section class="requests-board">
+          <div class="section-heading"><h2>¿Nos ayudas a completar la clase?</h2></div>
+          @for (lesson of requests(); track lesson.id) {
+            <article class="request-card">
+              <span class="eyebrow">SE BUSCAN REFUERZOS</span>
+              <h3>{{ lesson.name }}</h3>
+              <p>
+                {{ shortDate(lesson.date) }} · {{ lesson.time }} · {{ store.teacherNames(lesson) }}
+              </p>
+              <div class="role-spots">
+                @if (store.needed(lesson, 'chico')) {
+                  <span>{{ store.needed(lesson, 'chico') }} chicos</span>
+                }
+                @if (store.needed(lesson, 'chica')) {
+                  <span>{{ store.needed(lesson, 'chica') }} chicas</span>
+                }
+              </div>
+              <p>{{ lesson.reinforcement.message }}</p>
+              @if (auth.isUser()) {
+                @if (booked(lesson)) {
+                  <span class="confirmed">{{
+                    absent(lesson)
+                      ? 'Has avisado de una falta. Puedes recuperar la plaza desde Gestión si sigue libre.'
+                      : 'Ya tienes plaza en esta clase.'
+                  }}</span>
+                } @else {
+                  <button
+                    class="primary-button"
+                    [disabled]="
+                      !store.studentRole(store.studentId) ||
+                      store.needed(lesson, store.studentRole(store.studentId)!) <= 0
+                    "
+                    (click)="reserve(lesson)"
+                  >
+                    Me apunto · plaza de
+                    {{ store.studentRole(store.studentId) || 'tipo sin asignar' }}
+                  </button>
+                }
+              } @else {
+                <button class="secondary-button" (click)="openRoster(lesson)">
+                  Gestionar solicitud
+                </button>
+              }
+            </article>
+          } @empty {
+            <p class="empty-request">No hay solicitudes de refuerzo abiertas.</p>
+          }
+        </section>
+        @if (auth.isUser()) {
+          <section class="notification-settings" aria-label="Notificaciones de clase">
+            <h2>Que no se te pase bailar</h2>
+            <p>
+              Activa un recordatorio en este dispositivo los días que tengas clase, incluso con la
+              PWA cerrada. Las faltas avisadas no generan recordatorio.
+            </p>
+            @if (push.enabled()) {
+              <button class="secondary-button" [disabled]="push.busy()" (click)="push.disable()">
+                {{ push.busy() ? 'Guardando…' : 'Desactivar notificaciones' }}
+              </button>
+              <p class="push-status" role="status">
+                {{
+                  push.synced()
+                    ? 'Recordatorios activados y agenda sincronizada.'
+                    : 'Sincronizando la agenda con el servidor…'
+                }}
+              </p>
+            } @else {
+              <button
+                class="primary-button"
+                [disabled]="push.busy() || !push.supported"
+                (click)="push.enable()"
+              >
+                {{ push.busy() ? 'Activando…' : 'Activar notificaciones' }}
+              </button>
+            }
+            @if (!push.supported) {
+              <small
+                >Las notificaciones con la app cerrada se habilitan en la versión PWA de producción.
+                En iPhone, abre la app desde la pantalla de inicio. Aquí seguirás viendo el aviso
+                del día dentro de la app.</small
+              >
+            }
+            @if (push.error()) {
+              <p class="push-error" role="alert">{{ push.error() }}</p>
+              @if (push.supported && push.enabled()) {
+                <button class="secondary-button" [disabled]="push.busy()" (click)="push.enable()">
+                  Reintentar sincronización
+                </button>
+              }
+            }
+            <small>Un recordatorio por la mañana. Puedes desactivarlo cuando quieras.</small>
+          </section>
+        }
+        <div class="welcome-banner">
+          <div>
+            <span class="eyebrow">MÁS QUE PASOS</span>
+            <h2>Haz del baile tu momento.</h2>
+            <p>Consulta tus horarios y organiza tu semana a tu ritmo.</p>
+          </div>
+          <span class="banner-mark" aria-hidden="true">a.</span>
+        </div>
+      }
+
+      @if (section() === 'calendario') {
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">ENCUENTRA TU MOMENTO</p>
+            <h1>Calendario<span class="pink">.</span></h1>
+            <p>
+              {{
+                auth.isTeacher()
+                  ? 'Las sesiones que impartes, todas en un mismo lugar.'
+                  : 'Selecciona un día para consultar sus clases.'
+              }}
+            </p>
+          </div>
+          @if (auth.isAdmin()) {
+            <div class="heading-actions">
+              <button class="secondary-button" (click)="openStudentEditor()">+ Añadir alumno</button>
+              <button class="primary-button" (click)="openNew()">+ Crear clase</button>
+            </div>
+          }
+        </div>
+        <div class="calendar-layout">
+          <section class="calendar-panel" aria-label="Calendario mensual">
+            <div class="calendar-toolbar">
+              <h2>{{ monthTitle() }}</h2>
+              <div class="calendar-toolbar-actions">
+                @if (auth.isUser()) {
+                  <button
+                    class="mine-filter"
+                    type="button"
+                    [class.active]="calendarMineOnly()"
+                    [attr.aria-pressed]="calendarMineOnly()"
+                    (click)="calendarMineOnly.set(!calendarMineOnly())"
+                  >
+                    Mis clases
+                  </button>
+                }
+                <button aria-label="Mes anterior" (click)="moveMonth(-1)">‹</button
+                ><button (click)="goToday()">Hoy</button
+                ><button aria-label="Mes siguiente" (click)="moveMonth(1)">›</button>
+              </div>
+            </div>
+            <div class="calendar-grid">
+              @for (day of weekdays; track $index) {
+                <span class="weekday">{{ day }}</span>
+              }
+              @for (day of monthDays(); track day.key) {
+                <button
+                  class="calendar-day"
+                  [class.other-month]="!day.current"
+                  [class.selected]="day.key === selectedDay()"
+                  [class.today]="day.key === today"
+                  [attr.aria-label]="
+                    dateLabel(day.key) + ', ' + dayLessons(day.key).length + ' clases'
+                  "
+                  [attr.aria-pressed]="day.key === selectedDay()"
+                  (click)="selectCalendarDay(day.key)"
+                >
+                  <span>{{ day.number }}</span>
+                  <div class="day-dots">
+                    @for (lesson of dayLessons(day.key).slice(0, 3); track lesson.id) {
+                      <i [class.mine]="booked(lesson) && auth.isUser()"></i>
+                    }
+                  </div>
+                </button>
+              }
+            </div>
+            <div class="calendar-legend">
+              <span><i></i> Clase programada</span>
+              @if (auth.isUser()) {
+                <span><i class="mine"></i> Tu reserva</span>
+              }
+            </div>
+          </section>
+          <section class="day-agenda" [class.mobile-open]="mobileDayOpen()">
+            <div class="day-agenda-heading">
+              <div>
+                <p class="eyebrow">AGENDA DEL DÍA</p>
+                <h2>{{ dateLabel(selectedDay()) }}</h2>
+              </div>
+              <button
+                class="mobile-agenda-close"
+                type="button"
+                aria-label="Cerrar clases del día"
+                (click)="mobileDayOpen.set(false)"
+              >
+                ×
+              </button>
+            </div>
+            @for (lesson of selectedLessons(); track lesson.id) {
+              <article class="agenda-card">
+                <div class="card-top">
+                  <span class="mini-label">{{ lesson.time }} · {{ lesson.duration }} min</span
+                  ><span
+                    class="pill"
+                    [class.full]="store.activeIds(lesson).length >= lesson.capacity"
+                    >{{ lesson.capacity - store.activeIds(lesson).length }} libres</span
+                  >
+                </div>
+                <h3>{{ lesson.name }}</h3>
+                <p>{{ lesson.level || 'Nivel por confirmar' }} · {{ lesson.room }}</p>
+                <p>{{ store.teacherNames(lesson) }}</p>
+                <div class="role-spots">
+                  <span>{{ store.freeSpots(lesson, 'chico') }} plazas de chico</span
+                  ><span>{{ store.freeSpots(lesson, 'chica') }} plazas de chica</span>
+                </div>
+                @if (store.needed(lesson, 'chico') + store.needed(lesson, 'chica') > 0) {
+                  <p class="request-highlight">
+                    Se buscan {{ store.needed(lesson, 'chico') }} chicos y
+                    {{ store.needed(lesson, 'chica') }} chicas para completar la clase.
+                  </p>
+                  @if (lesson.reinforcement.message) {
+                    <p>{{ lesson.reinforcement.message }}</p>
+                  }
+                }
+                @if (auth.isUser()) {
+                  @if (booked(lesson)) {
+                    @if (absent(lesson)) {
+                      <span class="absence-badge">Falta avisada · plaza liberada</span>
+                      <button
+                        class="secondary-button full-width"
+                        [disabled]="store.isPast(lesson) || store.availableForStudent(lesson) <= 0"
+                        (click)="notifyAbsence(lesson, false)"
+                      >
+                        Volveré a asistir
+                      </button>
+                    } @else {
+                      <span class="confirmed"
+                        >✓ Tienes una plaza de {{ store.studentRole(store.studentId) }}</span
+                      >
+                    }
+                    @if (!store.isPast(lesson)) {
+                      <div class="calendar-attendance-choice">
+                        <span>¿Vas a asistir?</span>
+                        <button
+                          type="button"
+                          [class.active]="store.attendanceResponse(lesson, store.studentId) === 'going'"
+                          (click)="respondAttendance(lesson, 'going')"
+                        >
+                          Sí, voy
+                        </button>
+                        <button
+                          type="button"
+                          [class.active]="store.attendanceResponse(lesson, store.studentId) === 'not-going'"
+                          (click)="respondAttendance(lesson, 'not-going')"
+                        >
+                          No voy
+                        </button>
+                        <button
+                          type="button"
+                          [class.active]="store.attendanceResponse(lesson, store.studentId) === 'unsure'"
+                          (click)="respondAttendance(lesson, 'unsure')"
+                        >
+                          No lo sé
+                        </button>
+                      </div>
+                    }
+                  } @else {
+                    <button
+                      class="primary-button full-width"
+                      [disabled]="store.isPast(lesson) || store.availableForStudent(lesson) <= 0"
+                      (click)="reserve(lesson)"
+                    >
+                      {{
+                        store.isPast(lesson)
+                          ? 'Clase finalizada o en curso'
+                          : store.availableForStudent(lesson) <= 0
+                            ? 'Sin plazas de tu tipo'
+                            : 'Reservar plaza'
+                      }}
+                    </button>
+                  }
+                } @else {
+                  <div class="action-row">
+                    <button class="secondary-button" (click)="openRoster(lesson)">
+                      Alumnos / Refuerzos
+                    </button>
+                    @if (auth.isAdmin() && !store.isPast(lesson)) {
+                      <button class="text-button" (click)="edit(lesson)">Editar</button>
+                    }
+                  </div>
+                }
+              </article>
+            } @empty {
+              <div class="empty-state compact">
+                <i class="fa fa-calendar-o" aria-hidden="true"></i>
+                <h3>Un día sin clases</h3>
+                <p>
+                  {{
+                    auth.isAdmin()
+                      ? 'Puedes crear una clase para este día.'
+                      : 'Elige otro día para ver las sesiones disponibles.'
+                  }}
+                </p>
+              </div>
+            }
+          </section>
+        </div>
+      }
+
+      @if (section() === 'gestion') {
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">TODO EN SU SITIO</p>
+            <h1>{{ auth.isTeacher() ? 'Mis clases' : 'Gestión' }}<span class="pink">.</span></h1>
+            <p>
+              {{
+                auth.isAdmin()
+                  ? 'Organiza las clases, sus plazas y los alumnos de la academia.'
+                  : auth.isTeacher()
+                    ? 'Consulta los alumnos inscritos y registra su asistencia.'
+                    : 'Consulta tus inscripciones y gestiona tus reservas.'
+              }}
+            </p>
+          </div>
+          @if (auth.isAdmin()) {
+            <div class="heading-actions">
+              <button class="secondary-button" (click)="openStudentEditor()">+ Añadir alumno</button>
+              <a class="primary-button" routerLink="/campus/calendario">Gestionar calendario</a>
+            </div>
+          }
+        </div>
+        @if (auth.isUser()) {
+          <div class="section-heading">
+            <h2>Mis reservas</h2>
+            <span>{{ myLessons().length }} clases</span>
+          </div>
+          <div class="lesson-list">
+            @for (lesson of myLessons(); track lesson.id) {
+            <article class="lesson-row">
+              <div class="date-tile">{{ shortDate(lesson.date) }}</div>
+              <div class="lesson-info">
+                <span class="mini-label">{{ lesson.time }} · {{ lesson.room }}</span>
+                <h3>{{ lesson.name }}</h3>
+                <p>{{ lesson.level || 'Nivel por confirmar' }} · {{ store.teacherNames(lesson) }}</p>
+              </div>
+              <div class="row-actions">
+                  @if (store.isPast(lesson)) {
+                    @if (absent(lesson)) {
+                      <span class="absence-badge">Falta avisada</span>
+                    }
+                    <span class="pill">{{
+                      lesson.attendance[store.studentId] === 'present'
+                        ? 'Asististe'
+                        : lesson.attendance[store.studentId] === 'absent'
+                          ? 'No asististe'
+                          : 'Pasada / en curso'
+                    }}</span>
+                  } @else if (pendingAbsence() === lesson.id) {
+                    <span>Tu plaza quedará libre para esta sesión.</span
+                    ><button class="danger-button" (click)="notifyAbsence(lesson, true)">
+                      Confirmar falta</button
+                    ><button class="text-button" (click)="pendingAbsence.set(null)">Volver</button>
+                  } @else if (absent(lesson)) {
+                    <span class="absence-badge">Falta avisada</span
+                    ><button
+                      class="secondary-button"
+                      [disabled]="store.availableForStudent(lesson) <= 0"
+                      (click)="notifyAbsence(lesson, false)"
+                    >
+                      Volveré a asistir
+                    </button>
+                    @if (store.availableForStudent(lesson) <= 0) {
+                      <small>Tu plaza ya está cubierta.</small>
+                    }
+                  } @else if (pendingCancel() === lesson.id) {
+                    <span>¿Liberar tu plaza?</span
+                    ><button class="danger-button" (click)="cancel(lesson.id)">Sí, cancelar</button
+                    ><button class="text-button" (click)="pendingCancel.set(null)">Volver</button>
+                  } @else {
+                    <button class="secondary-button" (click)="pendingAbsence.set(lesson.id)">
+                      Avisar que falto</button
+                    ><span class="pill">Confirmada</span
+                    ><button class="text-button" (click)="pendingCancel.set(lesson.id)">
+                      Cancelar reserva
+                    </button>
+                  }
+              </div>
+            </article>
+          } @empty {
+            <div class="empty-state">
+              <h3>Aún no hay clases aquí</h3>
+              <p>
+                  Tus reservas aparecerán en esta pestaña.
+              </p>
+              <a routerLink="/campus/calendario">Ver calendario →</a>
+            </div>
+          }
+          </div>
+        } @else {
+          <section class="management-section" [class.expanded]="managementPanel() === 'classes'">
+            <button
+              class="management-section-toggle"
+              type="button"
+              [attr.aria-expanded]="managementPanel() === 'classes'"
+              aria-controls="management-classes"
+              (click)="toggleManagementPanel('classes')"
+            >
+              <span>
+                <small>HORARIO HABITUAL</small>
+                <strong>Clases fijas semanales</strong>
+              </span>
+              <span class="management-section-meta">
+                {{ fixedClasses().length }} clases
+                <i class="fa fa-chevron-down" aria-hidden="true"></i>
+              </span>
+            </button>
+            @if (managementPanel() === 'classes') {
+              <div class="management-section-body" id="management-classes">
+                <div class="management-section-toolbar">
+                  <p>Una sola ficha por clase del horario habitual.</p>
+                  <a class="secondary-button" routerLink="/campus/calendario">
+                    Editar sesiones y refuerzos →
+                  </a>
+                </div>
+                <div class="lesson-list fixed-class-list">
+                  @for (lesson of fixedClasses(); track lesson.id) {
+                    <article class="lesson-row">
+                      <div class="date-tile weekly-date-tile">
+                        <strong>{{ weekdayNames[lesson.day] }}</strong>
+                        <small>{{ lesson.time }}</small>
+                      </div>
+                      <div class="lesson-info">
+                        <span class="mini-label">HORARIO SEMANAL</span>
+                        <h3>{{ lesson.name }}</h3>
+                        <p>
+                          {{ lesson.level || 'Nivel por confirmar' }} ·
+                          {{ weeklyTeachers(lesson.teacherIds) }}
+                        </p>
+                      </div>
+                      <div class="row-actions">
+                        <span class="pill">Clase fija</span>
+                        @if (auth.isAdmin()) {
+                          <button
+                            class="secondary-button"
+                            type="button"
+                            (click)="openFixedClassEditor(lesson)"
+                          >
+                            Editar clase fija
+                          </button>
+                        }
+                      </div>
+                    </article>
+                  }
+                </div>
+              </div>
+            }
+          </section>
+        }
+        @if (auth.isAdmin()) {
+          <section class="management-section" [class.expanded]="managementPanel() === 'students'">
+            <button
+              class="management-section-toggle"
+              type="button"
+              [attr.aria-expanded]="managementPanel() === 'students'"
+              aria-controls="management-students"
+              (click)="toggleManagementPanel('students')"
+            >
+              <span><small>ACADEMIA</small><strong>Alumnos</strong></span>
+              <span class="management-section-meta">
+                {{ store.students().length }} registrados
+                <i class="fa fa-chevron-down" aria-hidden="true"></i>
+              </span>
+            </button>
+            @if (managementPanel() === 'students') {
+              <div class="management-section-body" id="management-students">
+                <div class="management-section-toolbar">
+                  <p>Busca, revisa y asigna el tipo de plaza de cada alumno.</p>
+                  <button class="primary-button" type="button" (click)="openStudentEditor()">
+                    + Añadir alumno
+                  </button>
+                </div>
+                <div class="students-layout">
+                  <section class="students-panel">
+                    <label for="student-search">Buscar alumno</label
+                    ><input
+                      id="student-search"
+                      type="search"
+                      placeholder="Nombre o correo"
+                      [ngModel]="studentSearch()"
+                      (ngModelChange)="studentSearch.set($event)"
+                    />
+                    @for (student of filteredStudents(); track student.id) {
+                      <article class="student-row">
+                        <span class="avatar">{{ student.name.charAt(0) }}</span>
+                        <div>
+                          <strong>{{ student.name }}</strong
+                          ><small>{{ student.email }}</small>
+                        </div>
+                        <div class="student-role-control">
+                          <label [for]="'role-' + student.id">Tipo de plaza</label
+                          ><select
+                            [id]="'role-' + student.id"
+                            [ngModel]="student.danceRole"
+                            (ngModelChange)="changeStudentRole(student.id, $event)"
+                          >
+                            <option [ngValue]="null" disabled>Sin asignar</option>
+                            <option value="chico">Chico</option>
+                            <option value="chica">Chica</option>
+                          </select>
+                        </div>
+                        <span class="pill">{{ studentClasses(student.id) }} clases</span>
+                      </article>
+                    } @empty {
+                      <p class="empty-state">No hay alumnos que coincidan.</p>
+                    }
+                  </section>
+                </div>
+              </div>
+            }
+          </section>
+          <section class="management-section" [class.expanded]="managementPanel() === 'teachers'">
+            <button
+              class="management-section-toggle"
+              type="button"
+              [attr.aria-expanded]="managementPanel() === 'teachers'"
+              aria-controls="management-teachers"
+              (click)="toggleManagementPanel('teachers')"
+            >
+              <span><small>EQUIPO DOCENTE</small><strong>Profesores</strong></span>
+              <span class="management-section-meta">
+                {{ store.teachers().length }} registrados
+                <i class="fa fa-chevron-down" aria-hidden="true"></i>
+              </span>
+            </button>
+            @if (managementPanel() === 'teachers') {
+              <div class="management-section-body" id="management-teachers">
+                <div class="management-section-toolbar">
+                  <p>Edita los datos del equipo y consulta sus clases asignadas.</p>
+                  <button class="primary-button" type="button" (click)="openTeacherEditor()">
+                    + Añadir profesor
+                  </button>
+                </div>
+                <section class="students-panel teachers-panel">
+                  @for (teacher of store.teachers(); track teacher.id) {
+                    <article class="student-row teacher-row">
+                      <span class="avatar">{{ teacher.name.charAt(0) }}</span>
+                      <div>
+                        <strong>{{ teacher.name }}</strong>
+                        <small>
+                          {{ teacher.email || 'Correo pendiente' }}
+                          @if (teacher.phone) {
+                            · {{ teacher.phone }}
+                          }
+                        </small>
+                      </div>
+                      <span class="pill">
+                        {{ teacherClasses(teacher.id) }}
+                        {{ teacherClasses(teacher.id) === 1 ? 'clase semanal' : 'clases semanales' }}
+                      </span>
+                      <button
+                        class="secondary-button"
+                        type="button"
+                        (click)="openTeacherEditor(teacher)"
+                      >
+                        Editar datos
+                      </button>
+                    </article>
+                  }
+                </section>
+              </div>
+            }
+          </section>
+        }
+      }
+
+      @if (section() === 'chat') {
+        <div class="page-heading chat-heading">
+          <div>
+            <p class="eyebrow">COMUNICACIÓN INTERNA</p>
+            <h1>Chat<span class="pink">.</span></h1>
+            <p>Mensajes entre alumnos, profesores y administración.</p>
+          </div>
+          @if (auth.isAdmin()) {
+            <label class="chat-toggle">
+              <span
+                ><strong>Chat para la academia</strong
+                ><small>{{ chat.enabled() ? 'Activado' : 'Desactivado' }}</small></span
+              >
+              <input
+                type="checkbox"
+                role="switch"
+                [checked]="chat.enabled()"
+                (change)="toggleChat(!chat.enabled())"
+              />
+            </label>
+          }
+        </div>
+
+        @if (!chat.enabled()) {
+          <section class="chat-disabled">
+            <span class="chat-disabled-icon"
+              ><i class="fa fa-commenting-o" aria-hidden="true"></i
+            ></span>
+            <h2>El chat está desactivado</h2>
+            <p>
+              {{
+                auth.isAdmin()
+                  ? 'Actívalo desde el interruptor superior cuando quieras abrir las conversaciones.'
+                  : 'Administración ha pausado temporalmente las conversaciones internas.'
+              }}
+            </p>
+          </section>
+        } @else {
+          <div class="chat-layout">
+            <aside class="chat-channels" aria-label="Conversaciones">
+              <p class="eyebrow">CONVERSACIONES</p>
+              @for (channel of chat.channels(); track channel.id) {
+                <button
+                  type="button"
+                  [class.active]="chatTarget() === channel.id"
+                  [attr.aria-pressed]="chatTarget() === channel.id"
+                  (click)="selectChatChannel(channel.id)"
+                >
+                  <span class="channel-icon"
+                    ><i
+                      class="fa"
+                      [class.fa-users]="channel.id === 'all'"
+                      [class.fa-user]="channel.id !== 'all'"
+                      aria-hidden="true"
+                    ></i
+                  ></span>
+                  <span
+                    ><strong>{{ channel.label }}</strong
+                    ><small>{{ channel.description }}</small></span
+                  >
+                </button>
+              }
+              @if (auth.isAdmin()) {
+                <div class="chat-target-picker">
+                  <label for="chat-target-search">Personas y clases</label>
+                  <input
+                    id="chat-target-search"
+                    type="search"
+                    placeholder="Buscar nombre, correo o clase"
+                    [ngModel]="chatSearch()"
+                    (ngModelChange)="chatSearch.set($event)"
+                    [ngModelOptions]="{ standalone: true }"
+                  />
+                  <div class="chat-target-results">
+                    @for (target of chatTargets(); track target.id) {
+                      <button
+                        type="button"
+                        [class.active]="chatTarget() === target.id"
+                        [attr.aria-pressed]="chatTarget() === target.id"
+                        (click)="selectChatChannel(target.id)"
+                      >
+                        <span class="channel-icon">
+                          <i
+                            class="fa"
+                            [class.fa-user]="target.kind === 'person'"
+                            [class.fa-calendar]="target.kind === 'class'"
+                            aria-hidden="true"
+                          ></i>
+                        </span>
+                        <span
+                          ><strong>{{ target.label }}</strong
+                          ><small>{{ target.description }}</small></span
+                        >
+                      </button>
+                    } @empty {
+                      <small class="chat-no-results">No hay coincidencias.</small>
+                    }
+                  </div>
+                </div>
+              }
+            </aside>
+            <section class="chat-room" aria-label="Mensajes del chat">
+              <header>
+                <div>
+                  <h2>{{ chat.targetInfo(chatTarget()).label }}</h2>
+                  <p>{{ chat.targetInfo(chatTarget()).description }}</p>
+                </div>
+                <span class="online-dot">Chat activo</span>
+              </header>
+              <div class="message-list" aria-live="polite">
+                @for (message of conversation(); track message.id) {
+                  <article
+                    class="chat-message"
+                    [class.own-message]="message.senderRole === auth.currentRole()"
+                  >
+                    <div class="message-meta">
+                      <strong>{{ message.senderName }}</strong>
+                      <span>{{ chat.formatTime(message.createdAt) }}</span>
+                    </div>
+                    <p>{{ message.body }}</p>
+                  </article>
+                } @empty {
+                  <div class="empty-state chat-empty">
+                    <i class="fa fa-comments-o" aria-hidden="true"></i>
+                    <h3>Empieza la conversación</h3>
+                    <p>Aquí aparecerán los mensajes de este canal.</p>
+                  </div>
+                }
+              </div>
+              <form class="chat-composer" (ngSubmit)="sendChatMessage()">
+                <label class="sr-only" for="chat-message">Mensaje</label>
+                <textarea
+                  id="chat-message"
+                  name="chatMessage"
+                  [(ngModel)]="chatMessage"
+                  maxlength="1000"
+                  rows="2"
+                  placeholder="Escribe un mensaje…"
+                  required
+                ></textarea>
+                <button class="primary-button" type="submit" [disabled]="!chatMessage.trim()">
+                  Enviar <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                </button>
+              </form>
+            </section>
+          </div>
+        }
+      }
+    </main>
+  </div>
+</div>
+
+@if (chatAlert(); as message) {
+  <div
+    class="modal-backdrop-local chat-alert-backdrop"
+    [class.role-student]="auth.isUser()"
+    [class.role-teacher]="auth.isTeacher()"
+    [class.role-admin]="auth.isAdmin()"
+  >
+    <section
+      class="chat-alert-modal"
+      cdkTrapFocus
+      [cdkTrapFocusAutoCapture]="true"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="chat-alert-title"
+      (keydown.escape)="closeChatAlert()"
+    >
+      <button
+        class="close-button"
+        type="button"
+        aria-label="Cerrar aviso"
+        (click)="closeChatAlert()"
+      >
+        ×
+      </button>
+      <span class="alert-icon"><i class="fa fa-commenting" aria-hidden="true"></i></span>
+      <p class="eyebrow">NUEVO MENSAJE</p>
+      <h2 id="chat-alert-title">{{ message.senderName }}</h2>
+      <p class="alert-message">{{ message.body }}</p>
+      <span class="alert-time">{{ chat.formatTime(message.createdAt) }}</span>
+      <a class="primary-button" routerLink="/campus/chat" (click)="closeChatAlert()">Abrir chat</a>
+    </section>
+  </div>
+}
+
+@if (fixedClassEditorOpen() && fixedClassDraft; as fixedDraft) {
+  <div class="modal-backdrop-local">
+    <section
+      class="editor-panel"
+      cdkTrapFocus
+      [cdkTrapFocusAutoCapture]="true"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="fixed-class-editor-title"
+      (keydown.escape)="closeFixedClassEditor()"
+    >
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">HORARIO SEMANAL</p>
+          <h2 id="fixed-class-editor-title">Editar clase fija</h2>
+        </div>
+        <button
+          type="button"
+          class="close-button"
+          cdkFocusInitial
+          aria-label="Cerrar editor de clase fija"
+          (click)="closeFixedClassEditor()"
+        >
+          ×
+        </button>
+      </div>
+      <p>
+        Los cambios se aplicarán al horario general y a todas las próximas sesiones. Las
+        inscripciones y asistencias se conservan.
+      </p>
+      @if (error()) {
+        <p class="feedback error" role="alert">{{ error() }}</p>
+      }
+      <form (ngSubmit)="saveFixedClass()">
+        <label for="fixed-class-name">Nombre de la clase</label>
+        <input
+          id="fixed-class-name"
+          name="fixedClassName"
+          [(ngModel)]="fixedDraft.name"
+          maxlength="100"
+          required
+        />
+        <div class="form-grid">
+          <div>
+            <label for="fixed-class-day">Día de la semana</label>
+            <select id="fixed-class-day" name="fixedClassDay" [(ngModel)]="fixedDraft.day">
+              @for (weekday of weekdayNames; track weekday; let index = $index) {
+                <option [ngValue]="index">{{ weekday }}</option>
+              }
+            </select>
+          </div>
+          <div>
+            <label for="fixed-class-time">Hora de inicio</label>
+            <input
+              id="fixed-class-time"
+              name="fixedClassTime"
+              type="time"
+              [(ngModel)]="fixedDraft.time"
+              required
+            />
+          </div>
+          <div>
+            <label for="fixed-class-duration">Duración (minutos)</label>
+            <input
+              id="fixed-class-duration"
+              name="fixedClassDuration"
+              type="number"
+              [(ngModel)]="fixedDraft.duration"
+              min="15"
+              max="240"
+              required
+            />
+          </div>
+          <div>
+            <label for="fixed-class-level">Nivel</label>
+            <input
+              id="fixed-class-level"
+              name="fixedClassLevel"
+              [(ngModel)]="fixedDraft.level"
+              maxlength="80"
+              placeholder="Ej. Intermedio"
+            />
+          </div>
+          <div>
+            <label for="fixed-class-boys">Plazas de chico</label>
+            <input
+              id="fixed-class-boys"
+              name="fixedClassBoys"
+              type="number"
+              [(ngModel)]="fixedDraft.roleCapacity.chico"
+              min="0"
+              max="200"
+              required
+            />
+          </div>
+          <div>
+            <label for="fixed-class-girls">Plazas de chica</label>
+            <input
+              id="fixed-class-girls"
+              name="fixedClassGirls"
+              type="number"
+              [(ngModel)]="fixedDraft.roleCapacity.chica"
+              min="0"
+              max="200"
+              required
+            />
+          </div>
+        </div>
+        <fieldset>
+          <legend>Profesores · selecciona hasta dos</legend>
+          @for (teacher of store.teachers(); track teacher.id) {
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                [checked]="fixedDraft.teacherIds.includes(teacher.id)"
+                (change)="toggleFixedClassTeacher(teacher.id)"
+              />
+              {{ teacher.name }}
+            </label>
+          }
+        </fieldset>
+        <label for="fixed-class-room">Sala</label>
+        <input
+          id="fixed-class-room"
+          name="fixedClassRoom"
+          [(ngModel)]="fixedDraft.room"
+          maxlength="60"
+          required
+        />
+        <div class="editor-actions">
+          <button type="button" class="secondary-button" (click)="closeFixedClassEditor()">
+            Cancelar
+          </button>
+          <button type="submit" class="primary-button">Guardar clase fija</button>
+        </div>
+      </form>
+    </section>
+  </div>
+}
+
+@if (teacherEditorOpen() && auth.isAdmin()) {
+  <div class="modal-backdrop-local">
+    <section
+      class="editor-panel teacher-editor"
+      cdkTrapFocus
+      [cdkTrapFocusAutoCapture]="true"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="teacher-editor-title"
+      (keydown.escape)="closeTeacherEditor()"
+    >
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">EQUIPO DOCENTE</p>
+          <h2 id="teacher-editor-title">
+            {{ teacherDraft.id ? 'Editar profesor' : 'Añadir profesor' }}
+          </h2>
+        </div>
+        <button
+          type="button"
+          class="close-button"
+          cdkFocusInitial
+          aria-label="Cerrar editor de profesor"
+          (click)="closeTeacherEditor()"
+        >
+          ×
+        </button>
+      </div>
+      <p>Los cambios de nombre se reflejan en todas las clases asignadas.</p>
+      @if (error()) {
+        <p class="feedback error" role="alert">{{ error() }}</p>
+      }
+      <form (ngSubmit)="saveTeacher()">
+        <label for="teacher-name">Nombre</label>
+        <input
+          id="teacher-name"
+          name="teacherName"
+          [(ngModel)]="teacherDraft.name"
+          required
+          maxlength="100"
+          autocomplete="name"
+        />
+        <div class="form-grid">
+          <div>
+            <label for="teacher-email">Correo electrónico</label>
+            <input
+              id="teacher-email"
+              name="teacherEmail"
+              type="email"
+              [(ngModel)]="teacherDraft.email"
+              maxlength="200"
+              autocomplete="email"
+              placeholder="Opcional"
+            />
+          </div>
+          <div>
+            <label for="teacher-phone">Teléfono</label>
+            <input
+              id="teacher-phone"
+              name="teacherPhone"
+              type="tel"
+              [(ngModel)]="teacherDraft.phone"
+              maxlength="30"
+              autocomplete="tel"
+              placeholder="Opcional"
+            />
+          </div>
+        </div>
+        <div class="editor-actions">
+          <button type="button" class="secondary-button" (click)="closeTeacherEditor()">
+            Cancelar
+          </button>
+          <button type="submit" class="primary-button">
+            {{ teacherDraft.id ? 'Guardar cambios' : 'Añadir profesor' }}
+          </button>
+        </div>
+      </form>
+    </section>
+  </div>
+}
+
+@if (studentEditorOpen() && auth.isAdmin()) {
+  <div class="modal-backdrop-local">
+    <section
+      class="editor-panel student-editor"
+      cdkTrapFocus
+      [cdkTrapFocusAutoCapture]="true"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="student-editor-title"
+      (keydown.escape)="closeStudentEditor()"
+    >
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">NUEVA FICHA</p>
+          <h2 id="student-editor-title">Añadir alumno</h2>
+        </div>
+        <button
+          type="button"
+          class="close-button"
+          cdkFocusInitial
+          aria-label="Cerrar alta de alumno"
+          (click)="closeStudentEditor()"
+        >
+          ×
+        </button>
+      </div>
+      <p>Crea su ficha y déjalo inscrito en sus clases semanales desde este mismo paso.</p>
+      @if (error()) {
+        <p class="feedback error" role="alert">{{ error() }}</p>
+      }
+      <form (ngSubmit)="addStudent()">
+        <div class="form-grid">
+          <div>
+            <label for="student-name">Nombre completo</label>
+            <input
+              id="student-name"
+              name="studentName"
+              [(ngModel)]="studentName"
+              required
+              maxlength="100"
+              autocomplete="name"
+            />
+          </div>
+          <div>
+            <label for="student-email">Correo electrónico</label>
+            <input
+              id="student-email"
+              name="studentEmail"
+              type="email"
+              [(ngModel)]="studentEmail"
+              required
+              maxlength="200"
+              autocomplete="email"
+            />
+          </div>
+        </div>
+        <fieldset class="role-choice">
+          <legend>Tipo de plaza</legend>
+          <label>
+            <input type="radio" name="studentRole" value="chica" [(ngModel)]="studentDanceRole" />
+            Chica
+          </label>
+          <label>
+            <input type="radio" name="studentRole" value="chico" [(ngModel)]="studentDanceRole" />
+            Chico
+          </label>
+        </fieldset>
+        <fieldset>
+          <legend>Clases semanales <span>(opcional)</span></legend>
+          <p class="field-help">La inscripción se aplicará a las próximas sesiones del horario.</p>
+          <div class="weekly-enrollment-options">
+            @for (lesson of store.fixedClasses(); track lesson.id) {
+              <label class="weekly-enrollment-option">
+                <input
+                  type="checkbox"
+                  [checked]="studentWeeklyClassIds.includes(lesson.id)"
+                  (change)="toggleStudentWeeklyClass(lesson.id)"
+                />
+                <span class="weekly-time">
+                  <strong>{{ weekdayNames[lesson.day] }}</strong>
+                  <small>{{ lesson.time }}</small>
+                </span>
+                <span>
+                  <strong>{{ lesson.name }}</strong>
+                  <small>{{ lesson.level || 'Nivel por confirmar' }} · {{ weeklyTeachers(lesson.teacherIds) }}</small>
+                </span>
+              </label>
+            }
+          </div>
+        </fieldset>
+        <div class="editor-actions">
+          <button type="button" class="secondary-button" (click)="closeStudentEditor()">
+            Cancelar
+          </button>
+          <button type="submit" class="primary-button">Crear alumno</button>
+        </div>
+      </form>
+    </section>
+  </div>
+}
+
+@if (editing() && auth.isAdmin()) {
+  <div class="modal-backdrop-local">
+    <section
+      class="editor-panel"
+      cdkTrapFocus
+      [cdkTrapFocusAutoCapture]="true"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="editor-title"
+      (keydown.escape)="editing.set(false)"
+    >
+      <div class="section-heading">
+        <h2 id="editor-title">{{ draft.id ? 'Editar clase' : 'Nueva clase' }}</h2>
+        <button
+          type="button"
+          class="close-button"
+          cdkFocusInitial
+          aria-label="Cerrar editor"
+          (click)="editing.set(false)"
+        >
+          ×
+        </button>
+      </div>
+      <p>Define la sesión y elige quién viene a bailar.</p>
+      @if (error()) {
+        <p class="feedback error" role="alert">{{ error() }}</p>
+      }
+      <form (ngSubmit)="saveLesson()">
+        <label for="lesson-name">Nombre de la clase</label
+        ><input
+          id="lesson-name"
+          name="name"
+          [(ngModel)]="draft.name"
+          placeholder="Ej. Bachata sensual"
+          required
+          maxlength="100"
+        />
+        <div class="form-grid">
+          <div>
+            <label for="lesson-date">Fecha</label
+            ><input
+              id="lesson-date"
+              type="date"
+              name="date"
+              [(ngModel)]="draft.date"
+              [min]="today"
+              required
+            />
+          </div>
+          <div>
+            <label for="lesson-time">Hora de inicio</label
+            ><input id="lesson-time" type="time" name="time" [(ngModel)]="draft.time" required />
+          </div>
+          <div>
+            <label for="lesson-duration">Duración (minutos)</label
+            ><input
+              id="lesson-duration"
+              type="number"
+              name="duration"
+              [(ngModel)]="draft.duration"
+              min="15"
+              max="240"
+              required
+            />
+          </div>
+          <div>
+            <label for="lesson-boys">Plazas de chico</label
+            ><input
+              id="lesson-boys"
+              type="number"
+              name="boys"
+              [(ngModel)]="draft.roleCapacity.chico"
+              min="0"
+              max="200"
+              required
+            />
+          </div>
+          <div>
+            <label for="lesson-girls">Plazas de chica</label
+            ><input
+              id="lesson-girls"
+              type="number"
+              name="girls"
+              [(ngModel)]="draft.roleCapacity.chica"
+              min="0"
+              max="200"
+              required
+            />
+          </div>
+          <div>
+            <label for="lesson-level">Nivel</label
+            ><select id="lesson-level" name="level" [(ngModel)]="draft.level">
+              <option>Iniciación</option>
+              <option>Intermedio</option>
+              <option>Avanzado</option>
+              <option>Todos los niveles</option>
+            </select>
+          </div>
+        </div>
+        <fieldset>
+          <legend>Profesores · selecciona hasta dos</legend>
+          @for (teacher of store.teachers(); track teacher.id) {
+            <label class="checkbox-label"
+              ><input
+                type="checkbox"
+                [checked]="draft.teacherIds.includes(teacher.id)"
+                (change)="toggleTeacher(teacher.id)"
+              />{{ teacher.name }}</label
+            >
+          }
+        </fieldset>
+        <label for="lesson-room">Sala</label
+        ><input id="lesson-room" name="room" [(ngModel)]="draft.room" required maxlength="60" />
+        <fieldset>
+          <legend>
+            Alumnos inscritos · {{ store.activeIds(draft).length }}/{{
+              draft.roleCapacity.chico + draft.roleCapacity.chica
+            }}
+          </legend>
+          <div class="enrollment-options">
+            @for (student of store.students(); track student.id) {
+              <label class="checkbox-label"
+                ><input
+                  type="checkbox"
+                  [checked]="draft.studentIds.includes(student.id)"
+                  (change)="toggleStudent(student.id)"
+                />{{ student.name }} · {{ store.roleLabel(student.danceRole) }}
+                {{ draft.absenceIds.includes(student.id) ? '(falta avisada)' : '' }}</label
+              >
+            }
+          </div>
+        </fieldset>
+        <div class="editor-actions">
+          <button type="button" class="secondary-button" (click)="editing.set(false)">
+            Cancelar</button
+          ><button type="submit" class="primary-button">Guardar clase</button>
+        </div>
+      </form>
+    </section>
+  </div>
+}
+@if (roster(); as lesson) {
+  <div class="modal-backdrop-local">
+    <section
+      class="editor-panel"
+      cdkTrapFocus
+      [cdkTrapFocusAutoCapture]="true"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="roster-title"
+      (keydown.escape)="rosterId.set(null)"
+    >
+      <div class="section-heading">
+        <h2 id="roster-title">{{ lesson.name }}</h2>
+        <button
+          class="close-button"
+          cdkFocusInitial
+          aria-label="Cerrar alumnos"
+          (click)="rosterId.set(null)"
+        >
+          ×
+        </button>
+      </div>
+      <p>{{ dateLabel(lesson.date) }} · {{ lesson.time }} · {{ lesson.room }}</p>
+      <p>{{ store.teacherNames(lesson) }}</p>
+      <div class="role-spots">
+        <span>Chicos: {{ store.occupied(lesson, 'chico') }}/{{ lesson.roleCapacity.chico }}</span
+        ><span>Chicas: {{ store.occupied(lesson, 'chica') }}/{{ lesson.roleCapacity.chica }}</span>
+      </div>
+      @if (error()) {
+        <p class="feedback error" role="alert">{{ error() }}</p>
+      }
+      @if (!store.isPast(lesson)) {
+        <form class="reinforcement-form" (ngSubmit)="publishRequest(lesson)">
+          <h3>Solicitar refuerzos</h3>
+          <p>Publica las plazas que necesitas cubrir. Los alumnos podrán apuntarse.</p>
+          <div class="form-grid">
+            <div>
+              <label for="request-boys"
+                >Chicos · {{ store.freeSpots(lesson, 'chico') }} libres</label
+              ><input
+                id="request-boys"
+                name="requestBoys"
+                type="number"
+                [(ngModel)]="requestDraft.chico"
+                min="0"
+                [max]="store.freeSpots(lesson, 'chico')"
+                required
+              />
+            </div>
+            <div>
+              <label for="request-girls"
+                >Chicas · {{ store.freeSpots(lesson, 'chica') }} libres</label
+              ><input
+                id="request-girls"
+                name="requestGirls"
+                type="number"
+                [(ngModel)]="requestDraft.chica"
+                min="0"
+                [max]="store.freeSpots(lesson, 'chica')"
+                required
+              />
+            </div>
+          </div>
+          <label for="request-message">Mensaje (opcional)</label
+          ><input
+            id="request-message"
+            name="requestMessage"
+            [(ngModel)]="requestDraft.message"
+            maxlength="240"
+            placeholder="Ej. Nos vendría bien ayuda con las parejas"
+          />
+          <div class="action-row">
+            <button type="submit" class="primary-button">Publicar solicitud</button>
+            @if (lesson.reinforcement.chico + lesson.reinforcement.chica > 0) {
+              <button type="button" class="text-button" (click)="withdrawRequest(lesson)">
+                Retirar solicitud
+              </button>
+            }
+          </div>
+        </form>
+      }
+      <h3>Alumnos y asistencia</h3>
+      @if (notice()) {
+        <p class="feedback success" role="status">{{ notice() }}</p>
+      }
+      @for (id of lesson.studentIds; track id) {
+        <div class="attendance-row">
+          <div>
+            <strong>{{ store.studentName(id) }}</strong
+            ><small class="student-role-label">{{ store.roleLabel(store.studentRole(id)) }}</small>
+            @if (lesson.absenceIds.includes(id)) {
+              <span class="absence-badge">Ha avisado de que falta</span>
+            }
+          </div>
+          <div>
+            <button
+              class="secondary-button"
+              [class.attended]="lesson.attendance[id] === 'present'"
+              [attr.aria-pressed]="lesson.attendance[id] === 'present'"
+              (click)="attendance(lesson.id, id, 'present')"
+            >
+              Asiste</button
+            ><button
+              class="secondary-button"
+              [class.missed]="lesson.attendance[id] === 'absent'"
+              [attr.aria-pressed]="lesson.attendance[id] === 'absent'"
+              (click)="attendance(lesson.id, id, 'absent')"
+            >
+              No asiste
+            </button>
+          </div>
+        </div>
+      } @empty {
+        <div class="empty-state">Todavía no hay alumnos inscritos en esta clase.</div>
+      }
+    </section>
+  </div>
+}

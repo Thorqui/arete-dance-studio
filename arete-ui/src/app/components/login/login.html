@@ -1,15 +1,32 @@
-<div class="container mt-5 text-center text-white">
-  <h2>Selecciona tu Perfil</h2>
-  <p class="mb-4">Este es un inicio de sesión de prueba para la PWA de Arete.</p>
-
-  <div class="d-flex justify-content-center gap-3">
-    <button class="btn btn-outline-light btn-lg" (click)="loginAs('user')">
-      Soy Usuario
-    </button>
-    
-    <button class="btn btn-success btn-lg" (click)="loginAs('admin')">
-      Soy Administrador
-    </button>
-  </div>
+<div class="login-page">
+  <a routerLink="/" class="back-link">← Volver a la web</a>
+  <main>
+    <img class="logo" src="assets/brand/isotipo.png" alt="Aretè" />
+    <p class="eyebrow">ARETÈ · DANCE STUDIO</p>
+    <h1>Tu espacio para bailar<span>.</span></h1>
+    <p class="intro">Entra y organiza tu día en la academia.</p>
+    <div class="profiles">
+      <button (click)="loginAs('user')">
+        <span class="icon"><i class="fa fa-user" aria-hidden="true"></i></span>
+        <h2>Soy alumno</h2>
+        <p>Encuentra clases, reserva tu plaza y organiza tu semana.</p>
+        <span class="enter">Entrar como alumno ↗</span></button
+      ><button (click)="loginAs('teacher')">
+        <span class="icon teacher"><i class="fa fa-music" aria-hidden="true"></i></span>
+        <h2>Soy profesor</h2>
+        <p>Consulta tus sesiones, conoce a tu grupo y pasa lista.</p>
+        <span class="enter">Entrar como profesor ↗</span></button
+      ><button (click)="loginAs('admin')">
+        <span class="icon admin"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+        <h2>Administración</h2>
+        <p>Crea clases y gestiona el calendario y los alumnos.</p>
+        <span class="enter">Entrar como admin ↗</span>
+      </button>
+    </div>
+    <p class="demo-caption">
+      Acceso de demostración · Sofía (alumno), Rubén (profesor) y Elena (administración).<br />No se
+      necesitan credenciales. Los cambios se guardan en este navegador.
+    </p>
+  </main>
+  <footer>Aprender. Conectar. Bailar.</footer>
 </div>
-

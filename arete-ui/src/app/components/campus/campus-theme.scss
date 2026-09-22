@@ -1,0 +1,265 @@
+:host {
+  --arete-night: #0d0d1a;
+  --arete-surface: #16162a;
+  --arete-fuchsia: #de4190;
+  --arete-purple: #70358b;
+  --arete-lilac: #ddbedc;
+  --arete-mint: #c1ddb4;
+  --arete-sky: #96d0df;
+  --role-accent: var(--arete-mint);
+  --role-accent-dark: #4f7d61;
+  --role-soft: #e5f0df;
+  --role-on-accent: #173d31;
+}
+
+.campus {
+  --role-accent: var(--arete-fuchsia);
+  --role-accent-dark: #a42d69;
+  --role-soft: #f5dce9;
+  --role-on-accent: #fff;
+  background:
+    radial-gradient(
+      circle at 93% 8%,
+      color-mix(in srgb, var(--role-soft) 55%, transparent),
+      transparent 28%
+    ),
+    #f8f7fa;
+}
+
+.campus.role-teacher {
+  --role-accent: var(--arete-sky);
+  --role-accent-dark: #3d8094;
+  --role-soft: #deeff4;
+  --role-on-accent: #173c48;
+}
+
+.campus.role-admin {
+  --role-accent: var(--arete-mint);
+  --role-accent-dark: #4f7d61;
+  --role-soft: #e5f0df;
+  --role-on-accent: #173d31;
+}
+
+.sidebar {
+  background:
+    linear-gradient(180deg, rgba(112, 53, 139, 0.23), transparent 38%), var(--arete-night);
+}
+
+.sidebar nav a {
+  color: #d8d3e0;
+}
+
+.sidebar nav a:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: #fff;
+}
+
+.sidebar nav a.active {
+  background: var(--role-accent);
+  color: var(--role-on-accent);
+}
+
+.workspace-label,
+.sidebar-bottom {
+  color: #bcaac8;
+}
+
+.topbar {
+  border-color: #e8dfeb;
+}
+
+.role-chip,
+.avatar {
+  border-color: color-mix(in srgb, var(--role-accent) 55%, #fff);
+  background: var(--role-soft);
+  color: var(--role-accent-dark);
+}
+
+.demo-dot,
+.pink {
+  background: var(--role-accent);
+  color: var(--role-accent);
+}
+
+.pink {
+  background: transparent;
+}
+
+.primary-button {
+  background: var(--role-accent-dark);
+  color: #fff;
+}
+
+.role-teacher .primary-button,
+.role-admin .primary-button {
+  background: var(--role-accent);
+  color: var(--role-on-accent);
+}
+
+.primary-button:hover {
+  filter: brightness(0.92);
+}
+
+.secondary-button,
+.stats .accent-stat,
+.calendar-day:hover,
+.empty-request,
+.reinforcement-form {
+  background: var(--role-soft);
+  border-color: color-mix(in srgb, var(--role-accent) 34%, #dcdcdc);
+  color: var(--role-accent-dark);
+}
+
+.calendar-day.today {
+  box-shadow: inset 0 0 0 1px var(--role-accent-dark);
+}
+
+.calendar-day.selected {
+  background: var(--role-accent-dark);
+  color: #fff;
+}
+
+.day-dots i.mine,
+.calendar-legend i.mine {
+  background: var(--arete-fuchsia);
+}
+
+.lesson-row,
+.agenda-card,
+.calendar-panel,
+.students-panel,
+.student-form,
+.notification-settings,
+.request-card {
+  border-color: #e7dfea;
+}
+
+.agenda-card {
+  border-left-color: var(--role-accent);
+}
+
+.welcome-banner {
+  background: linear-gradient(
+    120deg,
+    var(--arete-lilac),
+    color-mix(in srgb, var(--role-soft) 65%, #fff)
+  );
+}
+
+.welcome-banner h2,
+.banner-mark {
+  color: var(--arete-purple);
+}
+
+.reminder-banner {
+  background: var(--role-soft);
+  border-color: color-mix(in srgb, var(--role-accent) 35%, #fff);
+}
+
+.confirmed,
+.push-status {
+  color: var(--role-accent-dark);
+}
+
+@media (max-width: 700px) {
+  .sidebar {
+    background: var(--arete-night);
+  }
+}
+.heading-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+.student-editor {
+  width: 760px;
+}
+.role-choice {
+  display: flex;
+  gap: 10px;
+}
+.role-choice legend {
+  width: 100%;
+}
+.role-choice label {
+  min-width: 120px;
+  margin: 0;
+  padding: 10px 14px;
+  border: 1px solid #d7dfd1;
+  border-radius: 8px;
+  background: #fafbf8;
+  cursor: pointer;
+}
+.role-choice input {
+  margin-right: 7px;
+  accent-color: var(--role-accent-dark);
+}
+.field-help {
+  margin: -5px 0 11px;
+  color: #7a8576;
+  font-size: 11px;
+}
+.weekly-enrollment-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  max-height: 260px;
+  overflow: auto;
+  padding: 3px;
+}
+.weekly-enrollment-option {
+  display: grid;
+  grid-template-columns: auto 74px 1fr;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 11px;
+  border: 1px solid #dfe6da;
+  border-radius: 9px;
+  background: #fafbf8;
+  cursor: pointer;
+}
+.weekly-enrollment-option:has(input:checked) {
+  border-color: var(--role-accent-dark);
+  background: var(--role-soft);
+}
+.weekly-enrollment-option input {
+  accent-color: var(--role-accent-dark);
+}
+.weekly-enrollment-option span {
+  min-width: 0;
+}
+.weekly-enrollment-option strong,
+.weekly-enrollment-option small {
+  display: block;
+}
+.weekly-enrollment-option small {
+  margin-top: 2px;
+  color: #778478;
+  font-size: 10px;
+}
+.weekly-time {
+  padding-right: 9px;
+  border-right: 1px solid #dfe6da;
+}
+.teacher-editor {
+  width: 560px;
+}
+.teacher-row > div {
+  flex: 1;
+}
+.teacher-row .secondary-button {
+  padding: 9px 13px;
+}
+.weekly-date-tile {
+  flex-direction: column;
+  gap: 1px;
+}
+.weekly-date-tile strong {
+  font-size: 11px;
+}
+.weekly-date-tile small {
+  font-size: 12px;
+  font-weight: 500;
+}

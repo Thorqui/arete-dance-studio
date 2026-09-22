@@ -1,0 +1,229 @@
+.reminder-banner {
+  background: #e3edcf;
+  border: 1px solid #c3d5a8;
+  border-radius: 13px;
+  padding: 20px;
+  margin-bottom: 26px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.reminder-banner .eyebrow {
+  display: block;
+  margin-bottom: 5px;
+}
+.reminder-banner h2 {
+  font-size: 20px;
+}
+.reminder-banner a {
+  padding: 8px 15px;
+  border-left: 1px solid #b5c6a1;
+  display: grid;
+  gap: 4px;
+  font-size: 13px;
+}
+.reminder-banner a span {
+  font-size: 11px;
+  color: #61764e;
+}
+.role-spots {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 13px 0;
+}
+.role-spots span {
+  background: #eee8f3;
+  color: #685176;
+  border-radius: 7px;
+  padding: 6px 10px;
+  font-size: 11px;
+}
+.role-spots span:first-child {
+  background: #e0edf1;
+  color: #3c6574;
+}
+.request-highlight {
+  background: #faf0d9;
+  color: #826327 !important;
+  padding: 10px;
+  border-radius: 7px;
+  margin: 12px 0 !important;
+}
+.absence-badge {
+  display: inline-flex;
+  background: #f9e4d8;
+  color: #8d5432;
+  padding: 5px 9px;
+  border-radius: 6px;
+  font-size: 11px;
+  margin: 4px 0;
+}
+.requests-board {
+  margin-top: 30px;
+}
+.request-card {
+  background: #fff;
+  border: 1px solid #e4d6b8;
+  border-radius: 12px;
+  padding: 22px;
+  margin-bottom: 12px;
+}
+.request-card p {
+  font-size: 12px;
+  color: #76826f;
+  margin: 7px 0 13px;
+}
+.empty-request {
+  font-size: 13px;
+  color: #718169;
+  background: #edf1e7;
+  border-radius: 9px;
+  padding: 20px;
+}
+.reinforcement-form {
+  background: #f4f6ee;
+  padding: 20px;
+  border-radius: 12px;
+  margin: 20px 0 28px;
+}
+.reinforcement-form p {
+  font-size: 12px;
+  color: #6c795f;
+  margin-top: 8px;
+}
+.student-role-label {
+  display: block;
+  color: #73816c;
+  font-size: 11px;
+}
+.student-role-control {
+  max-width: 130px;
+}
+.student-role-control label {
+  font-size: 10px;
+  margin: 0 0 3px;
+}
+.student-role-control select {
+  font-size: 11px;
+  padding: 6px;
+}
+.notification-settings {
+  margin-top: 26px;
+  border: 1px solid #d8e0cf;
+  background: #fff;
+  border-radius: 12px;
+  padding: 22px;
+}
+.notification-settings p {
+  font-size: 12px;
+  color: #718067;
+  margin: 8px 0 15px;
+}
+.notification-settings small {
+  display: block;
+  margin-top: 12px;
+  font-size: 11px;
+  color: #77836d;
+}
+.notification-settings .push-error {
+  color: #98493a;
+}
+.push-status {
+  font-size: 12px;
+  color: #466d35;
+  margin-top: 12px;
+}
+.management-section {
+  margin-bottom: 14px;
+  overflow: hidden;
+  border: 1px solid #e0e6dd;
+  border-radius: 14px;
+  background: #fff;
+}
+.management-section-toggle {
+  width: 100%;
+  border: 0;
+  padding: 20px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  background: #fff;
+  color: #203c32;
+  text-align: left;
+}
+.management-section-toggle > span:first-child {
+  display: grid;
+  gap: 2px;
+}
+.management-section-toggle small {
+  color: #7a8d7c;
+  font-size: 9px;
+  letter-spacing: 1.8px;
+}
+.management-section-toggle strong {
+  font-size: 20px;
+}
+.management-section-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: #71806f;
+  font-size: 12px;
+}
+.management-section-meta i {
+  transition: transform 180ms ease;
+}
+.management-section.expanded .management-section-meta i {
+  transform: rotate(180deg);
+}
+.management-section-body {
+  padding: 0 20px 20px;
+  border-top: 1px solid #edf0e9;
+}
+.management-section-toolbar {
+  min-height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+.management-section-toolbar p {
+  color: #758176;
+  font-size: 12px;
+}
+@media (max-width: 700px) {
+  .reminder-banner {
+    padding: 17px;
+    gap: 12px;
+  }
+  .reminder-banner a {
+    width: 100%;
+    padding-left: 10px;
+  }
+  .request-card {
+    padding: 18px;
+  }
+  .reinforcement-form {
+    padding: 15px;
+  }
+  .student-role-control {
+    max-width: 110px;
+  }
+  .attendance-row > div:first-child {
+    display: block;
+  }
+  .management-section-toggle {
+    padding: 17px;
+  }
+  .management-section-body {
+    padding: 0 12px 12px;
+  }
+  .management-section-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+    padding: 15px 0;
+  }
+}

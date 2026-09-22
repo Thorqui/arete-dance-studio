@@ -5,26 +5,21 @@ import { AboutComponent } from '../about/about.component';
 import { StylesComponent } from '../styles/styles.component';
 import { ScheduleComponent } from '../schedule/schedule.component';
 import { ContactComponent } from '../contact/contact.component';
+import { WebsiteContentService } from '../../services/website-content';
 
 @Component({
   selector: 'app-hero',
   standalone: true,
-  imports: [
-    CommonModule,
-    AboutComponent,
-    StylesComponent,
-    ScheduleComponent,
-    ContactComponent
-  ],
+  imports: [CommonModule, AboutComponent, StylesComponent, ScheduleComponent, ContactComponent],
   templateUrl: './hero.component.html',
-  styleUrls: ['./hero.component.scss']
+  styleUrls: ['./hero.component.scss'],
 })
 export class HeroComponent implements AfterViewInit {
-
   @ViewChild('heroVideo') heroVideoRef!: ElementRef<HTMLVideoElement>;
 
   /** Instancia inyectada del servicio CMS para acceder a la data dinámica de forma reactiva */
   public cms = inject(CmsService);
+  public websiteContent = inject(WebsiteContentService);
 
   /** True si el navegador no puede reproducir el vídeo (fallback a imagen de fondo) */
   videoFailed = false;

@@ -1,0 +1,233 @@
+.attendance-prompt {
+  align-items: flex-start;
+}
+.attendance-prompt > div:first-child {
+  min-width: 210px;
+}
+.attendance-prompt > div:first-child p {
+  max-width: 360px;
+  margin-top: 7px;
+  color: #61764e;
+  font-size: 11px;
+}
+.attendance-prompt-card {
+  flex: 1;
+  min-width: 290px;
+  padding: 12px 15px;
+  border-left: 1px solid #b5c6a1;
+}
+.attendance-prompt-card > span {
+  display: block;
+  margin-top: 2px;
+  color: #61764e;
+  font-size: 11px;
+}
+.attendance-choice,
+.calendar-attendance-choice {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-top: 11px;
+}
+.attendance-choice button,
+.calendar-attendance-choice button {
+  border: 1px solid #c9d5bf;
+  border-radius: 20px;
+  padding: 7px 10px;
+  background: #fff;
+  color: #36533d;
+  font-size: 10px;
+}
+.calendar-attendance-choice {
+  padding-top: 13px;
+  border-top: 1px solid #e8ede4;
+}
+.calendar-attendance-choice > span {
+  width: 100%;
+  color: #627064;
+  font-size: 11px;
+  font-weight: 600;
+}
+.calendar-attendance-choice button.active {
+  border-color: var(--role-accent-dark);
+  background: var(--role-soft);
+  color: var(--role-accent-dark);
+  font-weight: 700;
+}
+.attendance-board {
+  margin-bottom: 34px;
+}
+.attendance-board-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+}
+.attendance-summary-card {
+  padding: 20px;
+  border: 1px solid #e0e6dd;
+  border-radius: 13px;
+  background: #fff;
+}
+.attendance-summary-card h3 {
+  margin: 3px 0;
+}
+.attendance-summary-card > div:first-child p,
+.attendance-names p {
+  color: #748076;
+  font-size: 11px;
+}
+.attendance-summary-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 14px 0 11px;
+}
+.attendance-summary-counts span {
+  padding: 5px 8px;
+  border-radius: 15px;
+  background: #f0f1ee;
+  color: #667168;
+  font-size: 10px;
+}
+.attendance-summary-counts .going {
+  background: #e2efdc;
+  color: #3e6937;
+}
+.attendance-summary-counts .not-going {
+  background: #f7e3dd;
+  color: #8b493d;
+}
+.attendance-summary-counts .unsure {
+  background: #f6efd9;
+  color: #806725;
+}
+.attendance-names {
+  display: grid;
+  gap: 5px;
+}
+.calendar-toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.calendar-toolbar .mine-filter {
+  margin-right: 7px;
+  border-color: #e7c7da;
+  background: #f7e7f0;
+  color: #995272;
+}
+.calendar-toolbar .mine-filter.active {
+  border-color: #cf79a2;
+  background: #edcade;
+  color: #71334f;
+  font-weight: 700;
+}
+.day-agenda-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+}
+.mobile-agenda-close {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  .workspace main.calendar-main {
+    max-width: none;
+    padding-right: 0;
+    padding-left: 0;
+  }
+  .calendar-main > .demo-note,
+  .calendar-main > .feedback,
+  .calendar-main > .page-heading {
+    margin-right: 18px;
+    margin-left: 18px;
+  }
+  .calendar-layout {
+    display: block;
+  }
+  .calendar-panel {
+    width: 100%;
+    padding: 18px 10px 24px;
+    border-right: 0;
+    border-left: 0;
+    border-radius: 0;
+  }
+  .calendar-toolbar {
+    align-items: flex-start;
+    padding: 0 5px;
+  }
+  .calendar-toolbar-actions {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .calendar-toolbar .mine-filter {
+    width: 100%;
+    margin: 0 0 5px;
+  }
+  .calendar-day {
+    min-height: 44px;
+    gap: 5px;
+  }
+  .calendar-legend {
+    padding-right: 5px;
+    padding-left: 5px;
+  }
+  .day-agenda {
+    display: none;
+  }
+  .day-agenda.mobile-open {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    display: block;
+    overflow-y: auto;
+    padding: 25px 18px 110px;
+    background: #f7f8f5;
+  }
+  .mobile-agenda-close {
+    display: inline-flex;
+    width: 38px;
+    height: 38px;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    border: 0;
+    border-radius: 50%;
+    background: #e7ece3;
+    color: #35513d;
+    font-size: 24px;
+  }
+  .day-agenda-heading {
+    position: sticky;
+    top: -25px;
+    z-index: 2;
+    margin: -25px -18px 18px;
+    padding: 22px 18px 15px;
+    border-bottom: 1px solid #e0e6dd;
+    background: #f7f8f5;
+  }
+  .attendance-prompt-card {
+    min-width: 100%;
+    padding: 12px 0 0;
+    border-top: 1px solid #b5c6a1;
+    border-left: 0;
+  }
+  .attendance-choice button {
+    flex: 1;
+  }
+  .attendance-board-grid {
+    grid-template-columns: 1fr;
+  }
+  .attendance-row {
+    padding: 18px 0;
+  }
+  .attendance-row > div:last-child {
+    width: 100%;
+  }
+  .attendance-row .secondary-button {
+    min-height: 42px;
+    flex: 1;
+  }
+}
