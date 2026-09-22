@@ -34,6 +34,14 @@ export const routes: Routes = [
     loadComponent: () => import('./components/login/login').then((m) => m.Login),
   },
   {
+    path: 'politica-de-cookies',
+    title: 'Arete · Política de cookies',
+    loadComponent: () =>
+      import('./components/legal/cookie-policy/cookie-policy.component').then(
+        (m) => m.CookiePolicyComponent,
+      ),
+  },
+  {
     path: 'admin',
     title: 'Panel de Administrador',
     canActivate: [adminGuard],

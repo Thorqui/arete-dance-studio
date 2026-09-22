@@ -1,0 +1,88 @@
+<!-- ============================================================
+     COOKIE BANNER - Aviso de consentimiento de cookies
+     Se muestra en la primera visita hasta que el usuario decide,
+     y puede reabrirse desde el footer ("Configurar cookies").
+     ============================================================ -->
+@if (visible) {
+  @if (consentService.hasDecided) {
+    <div class="cookie-overlay"></div>
+  }
+
+  <div class="cookie-banner" role="dialog" aria-modal="true" aria-labelledby="cookie-banner-title">
+    @if (!customizing()) {
+      <div class="cookie-banner-content">
+        <div class="cookie-banner-text">
+          <p id="cookie-banner-title" class="cookie-banner-title">
+            <i class="fa fa-cookie-bite"></i> Usamos cookies
+          </p>
+          <p class="cookie-banner-body">
+            Usamos cookies propias necesarias para el funcionamiento de la web y, si las aceptas, cookies de análisis
+            y marketing para mejorar tu experiencia. Puedes aceptarlas todas, rechazar las no esenciales o
+            personalizar tu elección. Más información en nuestra
+            <a href="/politica-de-cookies">política de cookies</a>.
+          </p>
+        </div>
+        <div class="cookie-banner-actions">
+          <button type="button" class="cookie-btn cookie-btn-ghost" (click)="startCustomize()">Personalizar</button>
+          <button type="button" class="cookie-btn cookie-btn-outline" (click)="rejectAll()">Rechazar</button>
+          <button type="button" class="cookie-btn cookie-btn-primary" (click)="acceptAll()">Aceptar todo</button>
+        </div>
+      </div>
+    } @else {
+      <div class="cookie-panel">
+        <p class="cookie-banner-title"><i class="fa fa-sliders"></i> Configurar cookies</p>
+
+        <div class="cookie-category">
+          <div class="cookie-category-header">
+            <span>Necesarias</span>
+            <span class="cookie-switch cookie-switch-locked" aria-hidden="true"><span class="cookie-switch-dot"></span></span>
+          </div>
+          <p>Imprescindibles para que la web funcione correctamente. No se pueden desactivar.</p>
+        </div>
+
+        <div class="cookie-category">
+          <div class="cookie-category-header">
+            <span>Analíticas</span>
+            <button
+              type="button"
+              class="cookie-switch"
+              [class.cookie-switch-on]="analyticsChoice()"
+              role="switch"
+              [attr.aria-checked]="analyticsChoice()"
+              aria-label="Activar cookies analíticas"
+              (click)="toggleAnalytics()"
+            >
+              <span class="cookie-switch-dot"></span>
+            </button>
+          </div>
+          <p>Nos ayudan a entender cómo se usa la web para mejorarla.</p>
+        </div>
+
+        <div class="cookie-category">
+          <div class="cookie-category-header">
+            <span>Marketing</span>
+            <button
+              type="button"
+              class="cookie-switch"
+              [class.cookie-switch-on]="marketingChoice()"
+              role="switch"
+              [attr.aria-checked]="marketingChoice()"
+              aria-label="Activar cookies de marketing"
+              (click)="toggleMarketing()"
+            >
+              <span class="cookie-switch-dot"></span>
+            </button>
+          </div>
+          <p>Se usan para mostrar contenido y promociones relevantes para ti.</p>
+        </div>
+
+        <div class="cookie-banner-actions">
+          <button type="button" class="cookie-btn cookie-btn-ghost" (click)="cancelCustomize()">Cancelar</button>
+          <button type="button" class="cookie-btn cookie-btn-primary" (click)="savePreferences()">
+            Guardar preferencias
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+}
